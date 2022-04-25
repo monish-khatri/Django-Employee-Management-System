@@ -123,17 +123,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </head>
 <body>
-    {% set message_level = 'warning' %}
+    {#{% set message_level = 'warning' %}#}
     {% if messages %}
         {% for message in messages %}
-            {% if message.tags == 'info' %}
-                {% set message_level='info' %}
-            {% elif message.tags == 'success' %}
-                {% set message_level='success' %}
-            {% elif message.tags == 'error' %}
-                {% set message_level='danger' %}
-            {% endif %}
-            <div class="container alert alert-{{message_level}} alert-dismissible" role="alert">
+            {# {% if message.tags == 'info' %}#}
+                {# {% set message_level='info' %}#}
+            {# {% elif message.tags == 'success' %}#}
+                {# {% set message_level='success' %}#}
+            {# {% elif message.tags == 'error' %}#}
+                {# {% set message_level='danger' %}#}
+            {# {% endif %}#}
+            <div class="container alert alert-danger alert-dismissible" role="alert">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <center>
                     {{message}}
