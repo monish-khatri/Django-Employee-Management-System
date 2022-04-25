@@ -850,14 +850,6 @@ section
 {
 	margin-top: 99px;
 }
-.destination_image
-{
-	width: 100%;
-}
-.destination_image img
-{
-	max-width: 100%;
-}
 .spec_offer
 {
 	position: absolute;
@@ -1361,4 +1353,10 @@ section
 .footer_contact_list ul li:not(:last-child)
 {
 	margin-bottom: 7px;
+}
+.destination_image img {
+    float: left;
+    width:  320px;
+    height: 250px;
+    object-fit: cover;
 }
