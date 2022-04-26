@@ -1,5 +1,5 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+# from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, redirect
 from .models import Blog
 from .models import Contact
 from .forms import ContactForm
@@ -16,6 +16,7 @@ def viewblog(request, id):
     return render(request, 'blog/view.html', params)
 
 def contact(request):
+    params = {"contactForm": ContactForm}
     if request.method=='POST':
         name = request.POST['name']
         email = request.POST['email']
@@ -27,6 +28,6 @@ def contact(request):
             contact = Contact(name=name, email=email, phone=phone, message=message)
             contact.save()
             messages.success(request, 'Form Filled Successfully. Our Team Reach you soon.')
-
-    params = {"contactForm": ContactForm}
-    return render(request, 'blog/contact.html', params)
+            return redirect("/blog/contact", params)
+    else:
+        return render(request, 'blog/contact.html', params)
