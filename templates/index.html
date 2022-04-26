@@ -37,6 +37,7 @@
 										<li class="active"><a href="index.html">Home</a></li>
 										<li><a href="contact.html">Contact</a></li>
 										{% if user.is_authenticated %}
+											<li><a href="add_destination">Add Destination</a></li>
 											<li><a href="#">Hello, {{user.first_name}}</a></li>
 											<li><a href="accounts/logout">Logout</a></li>
 										{% else %}
