@@ -53,3 +53,9 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return render(request, "login.html")
+
+def home(request):
+    if request.user.is_authenticated():
+        return render(request, "/")
+    else:
+        return render(request, "login.html")

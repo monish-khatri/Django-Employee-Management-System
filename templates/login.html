@@ -143,7 +143,15 @@
 <body>
     {% if messages %}
         {% for message in messages %}
+          {% if message.tags == 'info' %}
+            <div class="container alert alert-info alert-dismissible" role="alert">
+          {% elif message.tags == 'success' %}
+            <div class="container alert alert-success alert-dismissible" role="alert">
+          {% elif message.tags == 'error' %}
             <div class="container alert alert-danger alert-dismissible" role="alert">
+          {% else %}
+            <div class="container alert alert-warning alert-dismissible" role="alert">
+          {% endif %}
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <center>
                     {{message}}
