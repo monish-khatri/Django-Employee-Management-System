@@ -1,9 +1,8 @@
 from django.db import models
 
 class Employee(models.Model):
-    eid = models.IntegerField(unique=True)
-    ename = models.CharField(max_length=100)
-    eemail = models.EmailField()
-    econtact = models.CharField(max_length=15)
+    name = models.CharField(max_length=50,default='No Name')
+    email = models.EmailField()
+    phone = models.IntegerField(max_length=10)
     class Meta:
         db_table = "employee"
