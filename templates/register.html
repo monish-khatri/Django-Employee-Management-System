@@ -37,7 +37,11 @@
           width: 100%;
           opacity: 0.9;
         }
-
+        /* Set a grey background color and center the text of the "sign in" section */
+        .signin {
+          background-color: #f1f1f1;
+          text-align: center;
+        }
         button:hover {
           opacity:1;
         }
@@ -164,9 +168,12 @@
 
             <label for="password2"><b>Confirm Password</b></label>
             <input type="password" name="password2" placeholder="Confirm Password"><br>
-            <div class="clearfix">
+            <div class="container clearfix">
                 <button type="button" onclick="window.location='/'" class="cancelbtn">Cancel</button>
                 <button type="submit" class="signupbtn">Sign Up</button>
+            </div>
+            <div class="container signin">
+              <p>Already have an account? <a href="login">Sign in</a>.</p>
             </div>
     </form>
 </body>
