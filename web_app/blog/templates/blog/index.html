@@ -13,6 +13,7 @@
             </tr>
         </thead>
         <tbody>
+            {% if count > 0 %}
             {% for i in blogData %}
             <tr>
                 <td style="width:5%" align="center">{{forloop.counter}}</td>
@@ -23,6 +24,13 @@
                 <td style="width:75%"><a href="/blog/view/{{i.blog_id}}"><h5>{{i.blog_title}}</h5></a></td>
             </tr>
             {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4" align="center">
+                    <h4>No Blogs Added</h4>
+                </td>
+            </tr>
+            {% endif %}
         </tbody>
     </table>
     {% endblock %}

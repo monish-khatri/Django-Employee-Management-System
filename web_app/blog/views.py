@@ -8,5 +8,5 @@ def index(request):
 
 def viewblog(request, id):
     blogs = Blog.objects.get(blog_id=id)
-    params = {'blogData': blogs}
+    params = {'blogData': blogs, 'count':len(blogs)}
     return render(request, 'blog/view.html', params)
