@@ -11,5 +11,12 @@ def index(request):
     else:
         return redirect('accounts/login')
 
+def details(request, id):
+    if request.user.is_authenticated:
+        details = Destination.objects.get(id=id)
+        return render(request, "details.html", {'details': details})
+    else:
+        return redirect('accounts/login')
+
 def add_destination(request):
     return render(request, "add_destination.html", {'DestinationForm':DestinationForm()})
