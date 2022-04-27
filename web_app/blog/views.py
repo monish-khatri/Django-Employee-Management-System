@@ -7,12 +7,12 @@ from django.contrib import messages
 
 def index(request):
     blogs = Blog.objects.all()
-    params = {'blogData': blogs}
+    params = {'blogData': blogs, 'count':len(blogs)}    
     return render(request, 'blog/index.html', params)
 
 def viewblog(request, id):
     blogs = Blog.objects.get(blog_id=id)
-    params = {'blogData': blogs, 'count':len(blogs)}
+    params = {'blogData': blogs}
     return render(request, 'blog/view.html', params)
 
 def contact(request):
@@ -24,6 +24,7 @@ def contact(request):
         message = request.POST['message']
         if len(name) < 2 or len(email) < 5 or len(phone) < 10 or len(message) < 5:
             messages.error(request, 'Please provide valid details' )
+            return render(request, 'blog/contact.html', params)
         else:
             contact = Contact(name=name, email=email, phone=phone, message=message)
             contact.save()

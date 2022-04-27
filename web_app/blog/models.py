@@ -1,8 +1,7 @@
 from django.db import models
 
-# Create your models here.
 class Blog(models.Model):
-    blog_id = models.BigAutoField(primary_key=True, default="1")
+    blog_id = models.BigAutoField(primary_key=True)
     user_id = models.IntegerField(default='1')
     blog_category = models.IntegerField(default='1')
     blog_title = models.CharField(max_length=250)
@@ -24,19 +23,4 @@ class Contact(models.Model):
         return 'Contact Form Filled by ' + self.name + "("  + self.email + ")"
 """
     Reference : https://docs.djangoproject.com/en/4.0/ref/models/fields/
-    
-    Field.primary_key
-    Field.unique
-    AutoField
-    BigAutoField
-    IntegerField
-    BigIntegerField
-    CharField
-    DateField
-    DateTimeField
-    DecimalField
-    EmailField
-    JSONField
-    PositiveIntegerField
-    TextField
 """
