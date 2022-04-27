@@ -2,8 +2,8 @@ from django import forms
 
 class DestinationForm(forms.Form):
     # each field would be mapped as an input field in HTML
-    name = forms.CharField(max_length=100, min_length=10,required=True)
-    image = forms.ImageField(allow_empty_file=False)
-    desc = forms.CharField(max_length=500)
+    name = forms.CharField(label="NAME",max_length=100, min_length=10,required=True,widget=forms.TextInput(attrs={"class":"class-1 class-2"}))
+    image = forms.ImageField(allow_empty_file=True)
+    desc = forms.CharField(max_length=500,widget=forms.Textarea())
     price = forms.IntegerField(max_value=5000,min_value=500,required=True)
-    offer = forms.BooleanField(initial=False)
+    offer = forms.BooleanField(required=False)
