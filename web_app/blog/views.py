@@ -21,8 +21,8 @@ def editblog(request, id):
         blog_title = request.POST['blog_title']
         blog_desc = request.POST['blog_desc']
 
-        
-        blog = Blog(blog_id=id,blog_category=blog_category, blog_title = blog_title, blog_desc = blog_desc)
+        blog = Blog(blog_id=id, blog_category=blog_category, blog_title = blog_title, blog_desc = blog_desc)
+        blog.save()
         messages.success(request, 'Blog Updated Successfully.')
         return redirect('/blog')
     else:
@@ -36,6 +36,12 @@ def editblog(request, id):
                     })
             }
         return render(request, 'blog/edit.html', params)
+
+def removeblog(request, id):
+    blogs = Blog.objects.get(blog_id=id)
+    blogs.delete()
+    messages.error(request, 'Blog Removed Successfully.')
+    return redirect('/blog')
 
 def contact(request):
     params = {"contactForm": ContactForm}

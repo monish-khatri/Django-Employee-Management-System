@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
+    'django_cleanup.apps.CleanupConfig',#https://stackoverflow.com/questions/16041232/django-delete-filefield#28986357
 ]
 
 MIDDLEWARE = [

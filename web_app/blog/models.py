@@ -7,7 +7,7 @@ class Blog(models.Model):
     blog_title = models.CharField(max_length=250)
     blog_desc = models.TextField()
     blog_img = models.ImageField(upload_to="blog/images", default='untitled.png')
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.blog_title
@@ -17,7 +17,7 @@ class Contact(models.Model):
     email = models.CharField(max_length=250)
     phone = models.CharField(max_length=250)
     message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return 'Contact Form Filled by ' + self.name + "("  + self.email + ")"

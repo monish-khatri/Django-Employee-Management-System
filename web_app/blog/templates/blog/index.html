@@ -6,9 +6,8 @@
     {% for message in messages %}
         <div class="alert alert-dismissible alert-{{ message.tags }}">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <!-- <h4>{{message.tags}}</h4> -->
-            <h4>{% if  message.tags == "danger" %}Whoops .!{% else %}Success{% endif %}</h4>
-            <p>{{ message }}</p>
+            <h4>{{ message }}</h4>
+            <!-- <h4>{% if  message.tags == "danger" %}Whoops .!{% else %}Success{% endif %}</h4> -->
         </div>
     {% endfor %}
     <table class="table table-bordered">
@@ -42,7 +41,7 @@
             {% endfor %}
             {% else %}
             <tr>
-                <td colspan="4" align="center">
+                <td colspan="5" align="center">
                     <h4>No Blogs Added</h4>
                 </td>
             </tr>
