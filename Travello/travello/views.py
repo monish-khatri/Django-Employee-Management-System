@@ -1,4 +1,6 @@
+from unicodedata import name
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from .models import Destination
 from .forms import DestinationForm
 from django.contrib import messages
@@ -33,14 +35,21 @@ def add_destination(request):
 
 def add(request):
     if is_authenticated(request):
-        form = DestinationForm(request.POST)
-        try:
-            form.save()
-            messages.success(request,'Destination Added Successfully!')
-            return redirect('/hello')
-        except:
-            messages.error(request,'Something Went Wrong!')
-            return redirect('/')
+        # process form data
+        name = request.POST['name']
+        image = request.POST.get('image','')
+        if image != '':
+            image = 'pics/' + image
+        else:
+            image = 'pics/NoImage.png'
+        desc = request.POST['desc']
+        price = request.POST['price']
+        offer = True if request.POST.get('offer',False) == 'on' else False
+        obj = Destination(name=name,image=image,desc=desc,price=price,offer=offer)#gets new object
+        #finally save the object in db
+        obj.save()
+        messages.success(request,'Destination Added Successfully!')
+        return redirect('/')
 
     else:
         return redirect('accounts/login')
