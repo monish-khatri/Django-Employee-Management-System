@@ -7,7 +7,7 @@ class Blog(models.Model):
     blog_title = models.CharField(max_length=250)
     blog_desc = models.TextField()
     blog_img = models.ImageField(upload_to="blog/images", default='untitled.png')
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.blog_title

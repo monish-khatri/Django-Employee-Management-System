@@ -1,9 +1,9 @@
 # from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
 from .models import Blog
 from .models import Contact
-from .forms import ContactForm
 from django.contrib import messages
+from .forms import ContactForm, EditBlog
+from django.shortcuts import render, redirect
 
 def index(request):
     blogs = Blog.objects.all()
@@ -14,6 +14,28 @@ def viewblog(request, id):
     blogs = Blog.objects.get(blog_id=id)
     params = {'blogData': blogs}
     return render(request, 'blog/view.html', params)
+
+def editblog(request, id):
+    if request.method=='POST':
+        blog_category = request.POST['blog_category']
+        blog_title = request.POST['blog_title']
+        blog_desc = request.POST['blog_desc']
+
+        
+        blog = Blog(blog_id=id,blog_category=blog_category, blog_title = blog_title, blog_desc = blog_desc)
+        messages.success(request, 'Blog Updated Successfully.')
+        return redirect('/blog')
+    else:
+        blogs = Blog.objects.get(blog_id=id)
+        params = {
+                'blogData': blogs, 
+                'formSkelton': EditBlog({
+                        'blog_category': blogs.blog_category,
+                        'blog_title': blogs.blog_title,
+                        'blog_desc': blogs.blog_desc,
+                    })
+            }
+        return render(request, 'blog/edit.html', params)
 
 def contact(request):
     params = {"contactForm": ContactForm}
