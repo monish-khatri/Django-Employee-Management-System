@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 from employee.forms import EmployeeForm
 from employee.models import Employee
 from django.contrib import messages
+from django.core import serializers
+
 
 # Create your views here.
 def employee(request):
@@ -16,28 +19,36 @@ def employee(request):
                 messages.error(request,'Something Went Wrong!')
                 return redirect('/employee')
     else:
-       employees = show()
+       employees = get()
        return render(request,"index.html",{'employees':employees})
 
-def show():
+def get():
     employees = Employee.objects.all()
     return employees
 
-
 def edit(request, id):
-    employee = Employee.objects.get(id=id)
-    print(employee)
-    return render(request,'edit.html', {'employee':employee})
+    if request.method == "GET":
+        employee = Employee.objects.get(id=id)
+        # Convert modal instance to json format
+        jsonObject = serializers.serialize('json', [ employee ])
+        return HttpResponse(jsonObject)
+    else:
+        employee = Employee.objects.get(id=id)
+        form = EmployeeForm(request.POST, instance = employee)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request,'Employee Updated Successfully!')
+                return redirect('/employee')
+            except:
+                messages.error(request,'Something Went Wrong!')
+                return redirect('/employee')
+        else:
+            employees = get()
+            return render(request,"index.html",{'employees':employees})
 
-def update(request, id):
-    employee = Employee.objects.get(id=id)
-    form = EmployeeForm(request.POST, instance = employee)
-    if form.is_valid():
-        form.save()
-        return redirect("/show")
-    return render(request, 'edit.html', {'employee': employee})
-
-def destroy(request, id):
+def delete(request, id):
     employee = Employee.objects.get(id=id)
     employee.delete()
-    return redirect("/show")
+    messages.success(request,'Employee Deleted Successfully!')
+    return redirect('/employee')
