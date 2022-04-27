@@ -15,6 +15,23 @@ def viewblog(request, id):
     params = {'blogData': blogs}
     return render(request, 'blog/view.html', params)
 
+def addblog(request):
+    if request.method=='POST':
+        blog_category = request.POST['blog_category']
+        blog_title = request.POST['blog_title']
+        blog_desc = request.POST['blog_desc']
+
+        messages.success(request, 'Blog '+ request.POST['blog_title'] +' Successfully.')
+        blog = Blog(blog_category=blog_category, blog_title=blog_title, blog_desc=blog_desc)
+        blog.save()
+        return redirect('/blog')
+    else:
+        params = {
+            'formSkelton': EditBlog(),
+            'action': "Add"
+        }
+        return render(request, 'blog/edit.html', params)
+
 def editblog(request, id):
     if request.method=='POST':
         blog_category = request.POST['blog_category']
@@ -28,7 +45,8 @@ def editblog(request, id):
     else:
         blogs = Blog.objects.get(blog_id=id)
         params = {
-                'blogData': blogs, 
+                'blogData': blogs,
+                'action': "Edit",
                 'formSkelton': EditBlog({
                         'blog_category': blogs.blog_category,
                         'blog_title': blogs.blog_title,

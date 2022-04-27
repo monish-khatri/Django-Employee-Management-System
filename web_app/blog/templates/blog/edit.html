@@ -12,7 +12,12 @@
     color:black
   }
 </style>
+
+{% if action == "Add" %}
+<form action="/blog/add/" method="post" enctype="multipart/form-data">
+{% else %}
 <form action="/blog/edit/{{blogData.blog_id}}" method="post" enctype="multipart/form-data">
+{% endif %}
     {% csrf_token %}
     <div class="form-group">
         <label>Blog Category</label>
@@ -36,8 +41,9 @@
       </div>
     </div>
     <div class="form-group">
-      <button type="submit" class="btn btn-success">Submit</button>
+      <a href="/blog" class="btn btn-default">Cancel</a>
       <button type="reset" class="btn btn-default">Reset</button>
+      <button type="submit" class="btn btn-success">Submit</button>
     </div>
 </form>
 
