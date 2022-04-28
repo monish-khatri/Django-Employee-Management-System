@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .models import Destination
 from .forms import DestinationForm
 from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
 
 
 # Create your views here.
@@ -39,13 +40,18 @@ def add(request):
         name = request.POST['name']
         image = request.POST.get('image','')
         if image != '':
-            image = 'pics/' + image
+            imagePath = 'pics/' + image
         else:
-            image = 'pics/NoImage.png'
+            imagePath = 'pics/NoImage.png'
+
+
+        upload_file = request.FILES['image']
+        fs = FileSystemStorage(location='media/pics/')
+        image = fs.save(upload_file.name, upload_file)
         desc = request.POST['desc']
         price = request.POST['price']
         offer = True if request.POST.get('offer',False) == 'on' else False
-        obj = Destination(name=name,image=image,desc=desc,price=price,offer=offer)#gets new object
+        obj = Destination(name=name,image=imagePath,desc=desc,price=price,offer=offer)#gets new object
         #finally save the object in db
         obj.save()
         messages.success(request,'Destination Added Successfully!')
