@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
-    'django_cleanup.apps.CleanupConfig',#https://stackoverflow.com/questions/16041232/django-delete-filefield#28986357
+    # https://stackoverflow.com/questions/16041232/django-delete-filefield#28986357
+    # This is For Deleting Image automatically when data was removed from database
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [

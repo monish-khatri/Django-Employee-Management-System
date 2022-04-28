@@ -24,19 +24,20 @@
             {% if count > 0 %}
             {% for i in blogData %}
             <tr>
-                <td align="center">{{forloop.counter}}</td>
+                <td style="width: 3%;" align="center">{{forloop.counter}}</td>
                 <td style="width: 15%;" align="center">
                     <img style="height:100px" alt="No Preview Available" class="img-thumbnail" src="/media/{{i.blog_img}}">
                 </td>
                 <td style="width: 7%;"><h5>{{i.blog_category}}</h5></td>
                 <td>
                     <a href="/blog/view/{{i.blog_id}}"><h5>{{i.blog_title}}</h5></a>
-                    <p>{{i.blog_desc|truncatechars:200}}</p>
+                    <p>{{i.blog_desc|truncatechars:300}}</p>
                 </td>
-                <td style="width: 15%;">
-                    <a class="btn btn-sm btn-warning" href="/blog/edit/{{i.blog_id}}"><i class="fa fa-pencil-square-o"></i> Edit</a>
+                <td style="width: 12%;">
+                    <a data-toggle="tooltip" data-placement="top" title="View Blog" class="btn btn-sm btn-info" href="/blog/view/{{i.blog_id}}"><i class="fa fa-eye"></i></a>
+                    <a data-toggle="tooltip" data-placement="top" title="Edit Blog" class="btn btn-sm btn-warning" href="/blog/edit/{{i.blog_id}}"><i class="fa fa-pencil-square-o"></i></a>
                     <a class="remove_blog_{{i.blog_id}}" style="display: none;" href="/blog/remove/{{i.blog_id}}"></a>
-                    <button data-id="{{i.blog_id}}" class="btn btn-sm btn-danger removeBlog"><i class="fa fa-trash"></i> Remove</button>
+                    <button data-toggle="tooltip" data-placement="top" title="Delete Blog" data-id="{{i.blog_id}}" class="btn btn-sm btn-danger removeBlog"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
             {% endfor %}

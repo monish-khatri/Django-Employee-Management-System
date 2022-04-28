@@ -47,13 +47,15 @@ def editblog(request, id):
         blog_category = request.POST['blog_category']
         blog_title = request.POST['blog_title']
         blog_desc = request.POST['blog_desc']
-        blog_img = request.FILES['blog_img']
+        if request.FILES:
+            blog_img = request.FILES['blog_img']
 
         blog = Blog.objects.get(blog_id=id)
         blog.blog_category=blog_category
         blog.blog_title = blog_title
         blog.blog_desc = blog_desc
-        blog.blog_img = blog_img
+        if request.FILES:
+            blog.blog_img = blog_img
         blog.save()
 
         # blog = Blog.objects.filter(blog_id=id, blog_category=blog_category, blog_title = blog_title, blog_desc = blog_desc)
