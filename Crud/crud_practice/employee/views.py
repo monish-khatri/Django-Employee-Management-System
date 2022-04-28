@@ -1,3 +1,4 @@
+from traceback import print_tb
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from employee.forms import EmployeeForm
@@ -10,7 +11,7 @@ from django.core.paginator import Paginator
 # Create your views here.
 def employee(request):
     if request.method == "POST":
-        form = EmployeeForm(request.POST)
+        form = EmployeeForm(request.POST,request.FILES)
         if form.is_valid():
             try:
                 form.save()
@@ -36,10 +37,11 @@ def edit(request, id):
         employee = Employee.objects.get(id=id)
         # Convert modal instance to json format
         jsonObject = serializers.serialize('json', [ employee ])
+        print(jsonObject)
         return HttpResponse(jsonObject)
     else:
         employee = Employee.objects.get(id=id)
-        form = EmployeeForm(request.POST, instance = employee)
+        form = EmployeeForm(request.POST,request.FILES, instance = employee)
         if form.is_valid():
             try:
                 form.save()

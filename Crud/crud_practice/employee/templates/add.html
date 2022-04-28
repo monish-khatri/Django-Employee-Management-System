@@ -3,7 +3,7 @@
 <div id="addEmployeeModal" class="modal fade">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form action="/employee/" method="post">
+			<form action="/employee/" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="modal-header">
 					<h4 class="modal-title">Add Employee</h4>
@@ -21,6 +21,10 @@
 					<div class="form-group">
 						<label>Phone</label>
 						{{EmployeeForm.phone}}
+					</div>
+					<div class="form-group">
+						<label>Image</label>
+						{{EmployeeForm.image}}
 					</div>
 				</div>
 				<div class="modal-footer">
