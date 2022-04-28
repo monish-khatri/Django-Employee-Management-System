@@ -3,11 +3,19 @@ from .models import Blog
 from .models import Contact
 from django.contrib import messages
 from .forms import ContactForm, EditBlog
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 
-def index(request):
+def index(request, page=1):
     blogs = Blog.objects.all().order_by('-blog_id')
-    params = {'blogData': blogs, 'count':len(blogs)}    
+    paginator = Paginator(blogs, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    params = {
+            'blogData': page_obj,
+            'countCurrent': len(page_obj),
+            'count':len(blogs),
+        }
     return render(request, 'blog/index.html', params)
 
 def viewblog(request, id):
