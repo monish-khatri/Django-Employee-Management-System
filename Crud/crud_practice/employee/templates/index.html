@@ -73,7 +73,7 @@ table.table tr th:first-child {
 	width: 60px;
 }
 table.table tr th:last-child {
-	width: 100px;
+	width: 134px;
 }
 table.table-striped tbody tr:nth-of-type(odd) {
 	background-color: #fcfcfc;
@@ -99,6 +99,9 @@ table.table td a {
 	outline: none !important;
 }
 table.table td a:hover {
+	color: #2196F3;
+}
+.material-icons.view {
 	color: #2196F3;
 }
 table.table td a.edit {
@@ -299,6 +302,21 @@ $(document).ready(function(){
         });
         return false;
     });
+	$(".employee-view").click(function(ev) {
+        var url = $(this).data("form");
+		$.ajax({
+            type: 'GET',
+            url: url,
+			dataType: 'json',
+            success: function(data) {
+				var emp = data[0].fields
+				$("#view-name").val(emp.name)
+				$("#view-email").val(emp.email)
+				$("#view-phone").val(emp.phone)
+				$('#viewEmployeeModal').modal('show')
+            }
+        });
+    });
 	$(".employee-delete").click(function(ev) {
 		debugger
         var url = $(this).data("form");
@@ -369,6 +387,7 @@ $(document).ready(function(){
                 <td>{{emp.email}}</td>
                 <td>{{emp.phone}}</td>
                 <td>
+				  <a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="view employee-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
                   <a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="edit employee-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                   <a href="#deleteEmployeeModal" data-form="/employee/delete/{{emp.id}}" class="delete employee-delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                 </td>
@@ -392,12 +411,14 @@ $(document).ready(function(){
 							<li class="page-item"><a href="?page=1">First</a></li>
 								<li class="page-item"><a href="?page={{ employees.previous_page_number }}">Previous</a></li>
 							{% endif %}
-							{% for page in employees.paginator.page_range %}
-							{% if employees.number == page %}
-								<li class="page-item active"><a href="?page={{page}}" class="page-link">{{page}}</a></li>
-							{% else %}
-								<li class="page-item"><a href="?page={{page}}" class="page-link">{{page}}</a></li>
-							{% endif %}
+							{% for page in employees.adjusted_elided_pages %}
+								{% if employees.number == page %}
+									<li class="page-item active"><a href="?page={{page}}" class="page-link">{{page}}</a></li>
+								{% elif page == employees.paginator.ELLIPSIS %}
+									<li class="page-item"><a class="page-link">{{page}}</a></li>
+								{% else %}
+									<li class="page-item"><a href="?page={{page}}" class="page-link">{{page}}</a></li>
+								{% endif %}
 							{% endfor %}
 							{% if employees.has_next %}
 								<li class="page-item"><a href="?page={{ employees.next_page_number }}" class="page-link">Next</a></li>
@@ -414,6 +435,7 @@ $(document).ready(function(){
   {% include 'edit.html' %}
   {% include 'delete.html' %}
   {% include 'add.html' %}
+  {% include 'view.html' %}
 {% endblock %}
 </body>
 </html>

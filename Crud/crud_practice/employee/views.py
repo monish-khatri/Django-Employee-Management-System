@@ -25,9 +25,10 @@ def employee(request):
 
 def get(request):
     employees = Employee.objects.all()
-    paginator = Paginator(employees, 2)
-    page_number = request.GET.get('page')
+    paginator = Paginator(employees, 5)
+    page_number = request.GET.get('page',1)
     pageEmployee = paginator.get_page(page_number)
+    pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
     return {'employees':pageEmployee,'totalRecords': len(employees),'pageRecords':len(pageEmployee)}
 
 def edit(request, id):
