@@ -36,26 +36,13 @@ def add_destination(request):
 
 def add(request):
     if is_authenticated(request):
-        # process form data
-        name = request.POST['name']
-        image = request.POST.get('image','')
-        if image != '':
-            imagePath = 'pics/' + image
+        form = DestinationForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Destination Added Successfully!')
+            return redirect('/')
         else:
-            imagePath = 'pics/NoImage.png'
-
-
-        upload_file = request.FILES['image']
-        fs = FileSystemStorage(location='media/pics/')
-        image = fs.save(upload_file.name, upload_file)
-        desc = request.POST['desc']
-        price = request.POST['price']
-        offer = True if request.POST.get('offer',False) == 'on' else False
-        obj = Destination(name=name,image=imagePath,desc=desc,price=price,offer=offer)#gets new object
-        #finally save the object in db
-        obj.save()
-        messages.success(request,'Destination Added Successfully!')
-        return redirect('/')
-
+            messages.success(request,'Something Went Wrong!')
+            return redirect('/')
     else:
         return redirect('accounts/login')
