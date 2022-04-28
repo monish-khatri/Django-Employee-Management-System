@@ -52,8 +52,15 @@ def edit(request, id):
             employees = get(request)
             return render(request,"index.html",employees)
 
-def delete(request, id):
-    employee = Employee.objects.get(id=id)
-    employee.delete()
-    messages.success(request,'Employee Deleted Successfully!')
-    return redirect('/employee')
+def delete(request, str):
+    str = str.rstrip(',')
+    idList = [int(x) for x in str.split(',')]
+    try:
+        for id in idList:
+            employee = Employee.objects.get(id=id)
+            employee.delete()
+        messages.success(request,'Employees Deleted Successfully!')
+        return redirect('/employee')
+    except:
+        messages.error(request,'Something Went Wrong!')
+        return redirect('/employee')

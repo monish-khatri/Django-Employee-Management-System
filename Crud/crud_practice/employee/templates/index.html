@@ -321,6 +321,20 @@ $(document).ready(function(){
         var url = $(this).data("form");
 		$("#deleteForm").attr('action',url)
     });
+
+	$(".employee-delete-multiple").click(function(ev) {
+		var url = $(this).data("form");
+		var deleteSelected = ''
+		checkbox.each(function(){
+			if(this.checked){
+				deleteSelected += $(this).val() + ','
+			}
+		});
+		if (deleteSelected != ''){
+			$("#deleteForm").attr('action',url+deleteSelected)
+			$('#deleteEmployeeModal').modal('show')
+		}
+    });
 });
 </script>
 </head>
@@ -353,7 +367,7 @@ $(document).ready(function(){
 					</div>
 					<div class="col-sm-6">
 						<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
-						<a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
+						<a data-form="/employee/delete/" class="btn btn-danger employee-delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
 					</div>
 				</div>
 			</div>
@@ -393,7 +407,7 @@ $(document).ready(function(){
               </tr>
             {% endfor %}
           {% else %}
-          <tr>
+          <tr align="center">
             <td colspan="5">
               No records Found!
             </td>
