@@ -35,7 +35,8 @@
                 <td><a href="/blog/view/{{i.blog_id}}"><h5>{{i.blog_title}}</h5></a></td>
                 <td style="width: 15%;">
                     <a class="btn btn-sm btn-warning" href="/blog/edit/{{i.blog_id}}"><i class="fa fa-pencil-square-o"></i> Edit</a>
-                    <a class="btn btn-sm btn-danger" href="/blog/remove/{{i.blog_id}}"><i class="fa fa-trash"></i> Remove</a>
+                    <a class="remove_blog_{{i.blog_id}}" style="display: none;" href="/blog/remove/{{i.blog_id}}"> Remove</a>
+                    <button data-id="{{i.blog_id}}" class="btn btn-sm btn-danger removeBlog"><i class="fa fa-trash"></i> Remove</button>
                 </td>
             </tr>
             {% endfor %}
@@ -48,4 +49,20 @@
             {% endif %}
         </tbody>
     </table>
-    {% endblock %}
+    <script>
+        $(".removeBlog").click(function(){
+            dataId = $(this).data('id')
+            Swal.fire({
+                title: 'Are You Sure You Want to Delete ?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(".remove_blog_" + dataId)[0].click()
+                } else {
+                    Swal.fire('We\'ve Not removed that', '', 'info')
+                }
+            })
+        })
+    </script>
+{% endblock %}

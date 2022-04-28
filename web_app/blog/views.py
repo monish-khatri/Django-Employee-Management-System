@@ -6,7 +6,7 @@ from .forms import ContactForm, EditBlog
 from django.shortcuts import render, redirect
 
 def index(request):
-    blogs = Blog.objects.all()
+    blogs = Blog.objects.all().order_by('-blog_id')
     params = {'blogData': blogs, 'count':len(blogs)}    
     return render(request, 'blog/index.html', params)
 
