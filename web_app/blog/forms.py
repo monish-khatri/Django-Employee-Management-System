@@ -13,10 +13,20 @@ class ContactForm(forms.Form):
     phone = forms.CharField(label='Enter Your Mobile', max_length=10)
     message = forms.CharField(label='Enter Your Message', widget=forms.Textarea)
 
-class EditBlog(forms.Form):
+class EditBlog(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(EditBlog, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+    """Form for the image model"""
+    class Meta:
+        model = Blog
+        fields = ('blog_category', 'blog_title', 'blog_desc', 'blog_img')
 
     CHOICES = (('1', 'Category 1'),('2', 'Category 2'),('3', 'Category 3'),('4', 'Category 4'))
     blog_category = forms.ChoiceField(choices=CHOICES, label='Select Blog Category', widget=forms.Select(attrs={'class': "form-control"}))
-    blog_title = forms.CharField(label='Enter Blog Title', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
-    blog_desc = forms.CharField(label='Enter Blog Descritpion', widget=forms.Textarea(attrs={'class': "form-control"}))
+    # blog_title = forms.CharField(label='Enter Blog Title', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
+    # blog_desc = forms.CharField(label='Enter Blog Descritpion', widget=forms.Textarea(attrs={'class': "form-control"}))
     blog_img = forms.ImageField(label='Select Blog Image', required=False)

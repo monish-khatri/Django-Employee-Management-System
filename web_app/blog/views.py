@@ -21,9 +21,11 @@ def addblog(request):
         blog_title = request.POST['blog_title']
         blog_desc = request.POST['blog_desc']
 
+        form = EditBlog(request.POST, request.FILES)
+        form.save()
         messages.success(request, 'Blog '+ request.POST['blog_title'] +' Successfully.')
-        blog = Blog(blog_category=blog_category, blog_title=blog_title, blog_desc=blog_desc)
-        blog.save()
+        # blog = Blog(blog_category=blog_category, blog_title=blog_title, blog_desc=blog_desc)
+        # blog.save()
         return redirect('/blog')
     else:
         params = {
@@ -37,9 +39,17 @@ def editblog(request, id):
         blog_category = request.POST['blog_category']
         blog_title = request.POST['blog_title']
         blog_desc = request.POST['blog_desc']
+        blog_img = request.FILES['blog_img']
 
-        blog = Blog(blog_id=id, blog_category=blog_category, blog_title = blog_title, blog_desc = blog_desc)
+        blog = Blog.objects.get(blog_id=id)
+        blog.blog_category=blog_category
+        blog.blog_title = blog_title
+        blog.blog_desc = blog_desc
+        blog.blog_img = blog_img
         blog.save()
+
+        # blog = Blog.objects.filter(blog_id=id, blog_category=blog_category, blog_title = blog_title, blog_desc = blog_desc)
+        # blog.save()
         messages.success(request, 'Blog Updated Successfully.')
         return redirect('/blog')
     else:
