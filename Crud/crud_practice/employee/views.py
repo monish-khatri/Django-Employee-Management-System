@@ -14,11 +14,13 @@ def employee(request):
         form = EmployeeForm(request.POST,request.FILES)
         if form.is_valid():
             try:
-                form.save()
+                # form.save()
+                print(form.save())
+                exit()
                 messages.success(request,'Employee Added Successfully!')
                 return redirect('/employee')
             except:
-                messages.error(request,'Something Went Wrong!')
+                messages.error(request,form.errors)
                 return redirect('/employee')
     else:
         employees = get(request)
