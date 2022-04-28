@@ -4,6 +4,7 @@ from employee.forms import EmployeeForm
 from employee.models import Employee
 from django.contrib import messages
 from django.core import serializers
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -19,12 +20,15 @@ def employee(request):
                 messages.error(request,'Something Went Wrong!')
                 return redirect('/employee')
     else:
-       employees = get()
-       return render(request,"index.html",{'employees':employees})
+        employees = get(request)
+        return render(request,"index.html",employees)
 
-def get():
+def get(request):
     employees = Employee.objects.all()
-    return employees
+    paginator = Paginator(employees, 2)
+    page_number = request.GET.get('page')
+    pageEmployee = paginator.get_page(page_number)
+    return {'employees':pageEmployee,'totalRecords': len(employees),'pageRecords':len(pageEmployee)}
 
 def edit(request, id):
     if request.method == "GET":
@@ -44,8 +48,8 @@ def edit(request, id):
                 messages.error(request,'Something Went Wrong!')
                 return redirect('/employee')
         else:
-            employees = get()
-            return render(request,"index.html",{'employees':employees})
+            employees = get(request)
+            return render(request,"index.html",employees)
 
 def delete(request, id):
     employee = Employee.objects.get(id=id)
