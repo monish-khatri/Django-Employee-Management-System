@@ -24,12 +24,12 @@ def employee(request):
         return render(request,"index.html",employees)
 
 def get(request):
-    employees = Employee.objects.all()
+    employees = Employee.objects.all().order_by('-id')
     paginator = Paginator(employees, 5)
     page_number = request.GET.get('page',1)
     pageEmployee = paginator.get_page(page_number)
     pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-    return {'employees':pageEmployee,'totalRecords': len(employees),'pageRecords':len(pageEmployee)}
+    return {'employees':pageEmployee,'totalRecords': len(employees),'pageRecords':len(pageEmployee),'EmployeeForm':EmployeeForm()}
 
 def edit(request, id):
     if request.method == "GET":
