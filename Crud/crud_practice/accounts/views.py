@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User,auth
 from django.contrib import messages
+from django.contrib.auth import authenticate, login as direct_login
 
 # Create your views here.
 
@@ -27,6 +28,9 @@ def register(request):
             else:
                 user = User.objects.create_user(username=username,password=password,email=email, first_name=first_name,last_name=last_name )
                 user.save()
+                """ uncomment below code to Redirect to Dashboard directly after registration
+                new_user = authenticate(username=username,password=password)
+                direct_login(request, new_user)"""
                 messages.success(request, 'User Created Successfully')
                 return redirect('/login')
         else:
