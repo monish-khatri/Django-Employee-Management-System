@@ -1,4 +1,3 @@
-from tkinter import Image
 from django import forms
 from employee.models import Employee
 
@@ -16,5 +15,5 @@ class EmployeeForm(forms.ModelForm):
         fields = ['name', 'email','phone','image']
     name = forms.CharField(max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'Name','id':'name'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'Email Address','id':'email'}),required=True)
-    phone = forms.CharField(min_length=8,max_length=10,required=True,widget=forms.NumberInput(attrs={'placeholder':'Phone Number','id':'phone'}))
+    phone = forms.IntegerField(min_value=10000000,max_value=999999999999,required=True,widget=forms.NumberInput(attrs={'placeholder':'Phone Number','id':'phone'}))
     image = forms.ImageField(allow_empty_file=True,required=False,widget=forms.FileInput(attrs={'id':'image'}))
