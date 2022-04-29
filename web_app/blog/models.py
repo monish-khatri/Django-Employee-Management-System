@@ -1,9 +1,15 @@
 from django.db import models
 
+class Category(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    cat_name = models.CharField(max_length=250)
+    cat_status = models.IntegerField(default='1')
+    created_at = models.DateTimeField(auto_now=True)
+
 class Blog(models.Model):
     blog_id = models.BigAutoField(primary_key=True)
     user_id = models.IntegerField(default='1')
-    blog_category = models.IntegerField(default='1')
+    blog_category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     blog_title = models.CharField(max_length=250)
     blog_desc = models.TextField()
     blog_img = models.ImageField(upload_to="blog/images", default='untitled.png')
