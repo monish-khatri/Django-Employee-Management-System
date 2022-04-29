@@ -16,6 +16,4 @@ class Employee(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        user = User.get_current_user()
-        self.user_id = user.id
         super().save(*args, **kwargs)  # Call the "real" save() method.
