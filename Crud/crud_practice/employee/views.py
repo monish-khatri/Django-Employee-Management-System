@@ -46,7 +46,6 @@ def edit(request, id):
             employee = Employee.objects.get(id=id)
             # Convert modal instance to json format
             jsonObject = serializers.serialize('json', [ employee ])
-            print(jsonObject)
             return HttpResponse(jsonObject)
         else:
             employee = Employee.objects.get(id=id)
