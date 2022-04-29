@@ -29,7 +29,7 @@ def employee(request):
 
 def get(request):
     if is_authenticated(request):
-        employees = Employee.objects.filter(user_id=request.user.id).order_by('-id')
+        employees = Employee.objects.all().order_by('-id')
         paginator = Paginator(employees, 5)
         page_number = request.GET.get('page',1)
         pageEmployee = paginator.get_page(page_number)
