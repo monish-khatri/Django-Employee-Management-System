@@ -20,7 +20,6 @@ class EditBlog(forms.ModelForm):
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
 
-    """Form for the image model"""
     class Meta:
         model = Blog
         fields = ('blog_category', 'blog_title', 'blog_desc', 'blog_img')

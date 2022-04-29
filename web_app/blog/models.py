@@ -11,6 +11,11 @@ class Blog(models.Model):
 
     def __str__(self):
         return self.blog_title
+    
+    @property
+    def blog_with_cat(self):
+        return self.blog_title + '- asdd'
+
 class Contact(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=250)

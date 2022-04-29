@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # blog/apps.py >> BlogConfig
     'blog.apps.BlogConfig',
     # https://stackoverflow.com/questions/16041232/django-delete-filefield#28986357
     # This is For Deleting Image automatically when data was removed from database
