@@ -35,10 +35,12 @@
       <div class="col-md-8" style="padding: 0px;">
         <label>Blog Image</label>
         {{formSkelton.blog_img}}
-      </div>      
+      </div>
+      {% if blogData.blog_img %}
       <div class="col-md-4">
         <img src="/media/{{blogData.blog_img}}" class="img-thumbanail boximage" alt="No Image Availble">
       </div>
+      {% endif %}
     </div>
     <div class="form-group">
       <a href="/blog" class="btn btn-default">Cancel</a>
