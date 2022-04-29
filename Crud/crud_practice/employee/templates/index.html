@@ -411,7 +411,7 @@ $(document).ready(function(){
 						<label for="checkbox{{emp.id}}"></label>
 					</span>
 					{% else %}
-						{{ forloop.counter }}
+					{{ forloop.counter0|add:employees.start_index}}
 					{% endif %}
                 </td>
 				<td><img src="{{emp.image.url}}" class="image-size" alt="Image"></td>
@@ -437,7 +437,7 @@ $(document).ready(function(){
 				</tbody>
 			</table>
 			<div class="clearfix">
-				<div class="hint-text">Showing <b>{{pageRecords}}</b> out of <b>{{totalRecords}}</b> entries</div>
+				<div class="hint-text">Showing <b>{{employees.start_index}} to {{employees.end_index}}</b> of <b>{{totalRecords}}</b> entries</div>
 				<div class="pagination">
 					<span class="step-links">
 						<ul class="pagination">

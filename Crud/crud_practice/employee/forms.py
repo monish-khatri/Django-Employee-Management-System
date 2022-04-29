@@ -7,7 +7,9 @@ class EmployeeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EmployeeForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
+            fieldClasses = 'form-control phone-class' if visible.name == 'phone' else 'form-control'
+            visible.field.widget.attrs['class'] = fieldClasses
+
 
     class Meta:
         model = Employee

@@ -29,7 +29,8 @@ DEBUG = True
 # If DEBUG is False Then we must define Allowed hosts
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    'localhost'
+    'localhost',
+    '192.168.1.120'
 ]
 
 
