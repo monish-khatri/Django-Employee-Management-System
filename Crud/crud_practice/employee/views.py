@@ -1,3 +1,4 @@
+from tokenize import group
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from employee.forms import EmployeeForm
@@ -52,8 +53,9 @@ def edit(request, id):
     if is_authenticated(request):
         if request.method == "GET":
             employee = Employee.objects.get(id=id)
+            group = EmployeeGroup.objects.get(name=employee.group)
             # Convert modal instance to json format
-            jsonObject = serializers.serialize('json', [ employee ])
+            jsonObject = serializers.serialize('json', [ employee , group])
             return HttpResponse(jsonObject)
         else:
             employee = Employee.objects.get(id=id)

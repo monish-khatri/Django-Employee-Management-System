@@ -12,6 +12,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <style>
 .headerSortDown:after, .headerSortUp:after {
 	content: ' ';
@@ -346,12 +348,13 @@ $(document).ready(function(){
             url: url,
 			dataType: 'json',
             success: function(data) {
-				debugger;
 				var emp = data[0].fields
+				var grp = data[1].fields
+				console.log(grp.name)
 				$("#view-name").val(emp.name)
 				$("#view-email").val(emp.email)
 				$("#view-phone").val(emp.phone)
-				$("#view-group").val(emp.group)
+				$("#view-group").val(grp.name)
 				$("#view-image").attr('src','/media/'+emp.image)
 				$('#viewEmployeeModal').modal('show')
             }
