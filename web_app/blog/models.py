@@ -6,6 +6,9 @@ class Category(models.Model):
     cat_status = models.IntegerField(default='1')
     created_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.cat_name
+
 class Blog(models.Model):
     blog_id = models.BigAutoField(primary_key=True)
     user_id = models.IntegerField(default='1')
@@ -18,6 +21,12 @@ class Blog(models.Model):
     def __str__(self):
         return self.blog_title
     
+    def clean(self):
+        if self.blog_title:
+            self.blog_title = self.blog_title.strip()
+        if self.blog_desc:
+            self.blog_desc = self.blog_desc.strip()
+            
     @property
     def blog_with_cat(self):
         return self.blog_title + '- asdd'

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Blog
+from .models import Blog, Category
 
 class ContactForm(forms.Form):
 
@@ -20,12 +20,16 @@ class EditBlog(forms.ModelForm):
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
 
+        self.fields['blog_category'].error_messages.update({
+            'required': 'Please Select Category for Blog',
+        })
+        
     class Meta:
         model = Blog
         fields = ('blog_category', 'blog_title', 'blog_desc', 'blog_img')
 
-    CHOICES = (('1', 'Category 1'),('2', 'Category 2'),('3', 'Category 3'),('4', 'Category 4'))
-    blog_category = forms.ChoiceField(choices=CHOICES, label='Select Blog Category', widget=forms.Select(attrs={'class': "form-control"}))
+    catData = Category.objects.all().order_by('-id')
+    blog_category = forms.ModelChoiceField(queryset=catData, label='Select Blog Category', widget=forms.Select(attrs={'class': "form-control"}), required=True)
     # blog_title = forms.CharField(label='Enter Blog Title', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
     # blog_desc = forms.CharField(label='Enter Blog Descritpion', widget=forms.Textarea(attrs={'class': "form-control"}))
     blog_img = forms.ImageField(label='Select Blog Image', required=False)

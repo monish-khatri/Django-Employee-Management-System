@@ -1,5 +1,5 @@
 # from django.http import HttpResponse, HttpResponseRedirect
-from .models import Blog
+from .models import Blog, Category
 from .models import Contact
 from django.contrib import messages
 from .forms import ContactForm, EditBlog
@@ -24,22 +24,25 @@ def viewblog(request, id):
     return render(request, 'blog/view.html', params)
 
 def addblog(request):
+    params = {
+        'formSkelton': EditBlog(),
+        'action': "Add"
+    }
+
     if request.method=='POST':
         blog_category = request.POST['blog_category']
-        blog_title = request.POST['blog_title']
-        blog_desc = request.POST['blog_desc']
-
+    
         form = EditBlog(request.POST, request.FILES)
-        form.save()
-        messages.success(request, 'Blog '+ request.POST['blog_title'] +' Successfully.')
-        # blog = Blog(blog_category=blog_category, blog_title=blog_title, blog_desc=blog_desc)
-        # blog.save()
-        return redirect('/blog')
+        if form.is_valid():
+            messages.success(request, 'Blog '+ request.POST['blog_title'] +' Successfully.')
+            obj = form.save(commit=False)
+            obj.blog_category = Category.objects.get(id=blog_category)
+            obj.save()
+            return redirect('/blog')
+        else:
+            messages.error(request, form.errors)
+            return redirect('/blog/add')
     else:
-        params = {
-            'formSkelton': EditBlog(),
-            'action': "Add"
-        }
         return render(request, 'blog/edit.html', params)
 
 def editblog(request, id):
@@ -51,7 +54,7 @@ def editblog(request, id):
             blog_img = request.FILES['blog_img']
 
         blog = Blog.objects.get(blog_id=id)
-        blog.blog_category=blog_category
+        blog.blog_category=Category.objects.get(id=blog_category)
         blog.blog_title = blog_title
         blog.blog_desc = blog_desc
         if request.FILES:
