@@ -33,15 +33,16 @@ def employee(request):
 
 def get(request):
     if is_authenticated(request):
+        order_by = request.GET.get('order_by', '-id')
         if request.user.is_superuser:
-            employees = Employee.objects.all().order_by('-id')
+            employees = Employee.objects.all().order_by(order_by)
         else:
-            employees = Employee.objects.filter(user_id=request.user.id).order_by('-id')
+            employees = Employee.objects.filter(user_id=request.user.id).order_by(order_by)
         paginator = Paginator(employees, 5)
         page_number = request.GET.get('page',1)
         pageEmployee = paginator.get_page(page_number)
         pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return {'employees':pageEmployee,'totalRecords': len(employees),'EmployeeForm':EmployeeForm()}
+        return {'employees':pageEmployee,'totalRecords': len(employees),'EmployeeForm':EmployeeForm(),'order_by':order_by}
     else:
         return redirect('/login')
 
