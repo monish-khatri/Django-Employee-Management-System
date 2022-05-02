@@ -1,5 +1,6 @@
+from cProfile import label
 from django import forms
-from employee.models import Employee
+from employee.models import Employee,EmployeeGroup
 
 
 class EmployeeForm(forms.ModelForm):
@@ -18,3 +19,4 @@ class EmployeeForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'Email Address','id':'email'}),required=True)
     phone = forms.IntegerField(min_value=10000000,max_value=999999999999,required=True,widget=forms.NumberInput(attrs={'placeholder':'Phone Number','id':'phone'}))
     image = forms.ImageField(allow_empty_file=True,required=False,widget=forms.FileInput(attrs={'id':'image'}))
+    group = forms.ModelChoiceField(queryset=EmployeeGroup.objects.all(), label='Select Team', widget=forms.Select(attrs={'class': "form-control","id":"group"}), required=True)

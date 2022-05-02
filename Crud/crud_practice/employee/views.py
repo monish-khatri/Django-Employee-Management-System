@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from employee.forms import EmployeeForm
-from employee.models import Employee
+from employee.models import Employee,EmployeeGroup
 from django.contrib import messages
 from django.core import serializers
 from django.core.paginator import Paginator
@@ -18,6 +18,7 @@ def employee(request):
                     # To Store logged in user in the database directly
                     obj = form.save(commit=False) # Return an object without saving to the DB
                     obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
+                    obj.group = EmployeeGroup.objects.get(id=request.POST['group']) # Add an author field which will contain current user's id
                     obj.save() # Save the final "real form" to the DB
                     messages.success(request,'Employee Added Successfully!')
                     return redirect('/employee')
@@ -62,6 +63,7 @@ def edit(request, id):
                     # To Store logged in user in the database directly
                     obj = form.save(commit=False) # Return an object without saving to the DB
                     obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
+                    obj.group = EmployeeGroup.objects.get(id=request.POST['group']) # Add an author field which will contain current user's id
                     obj.save() # Save the final "real form" to the DB
                     messages.success(request,'Employee Updated Successfully!')
                     return redirect('/employee')

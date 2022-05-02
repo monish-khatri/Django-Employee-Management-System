@@ -329,6 +329,7 @@ $(document).ready(function(){
 				$("#name").val(emp.name)
 				$("#email").val(emp.email)
 				$("#phone").val(emp.phone)
+				$("#group").val(emp.group)
 				$("#edit-image").attr('src','/media/'+emp.image)
 				$('#editEmployeeModal').modal('show')
             }
@@ -342,10 +343,12 @@ $(document).ready(function(){
             url: url,
 			dataType: 'json',
             success: function(data) {
+				debugger;
 				var emp = data[0].fields
 				$("#view-name").val(emp.name)
 				$("#view-email").val(emp.email)
 				$("#view-phone").val(emp.phone)
+				$("#view-group").val(emp.group)
 				$("#view-image").attr('src','/media/'+emp.image)
 				$('#viewEmployeeModal').modal('show')
             }
@@ -421,8 +424,9 @@ $(document).ready(function(){
 						<th class="{% url_replace request 'order_by' 'email' '-' 'True' %} header-class" ><a href="?{% url_replace request 'order_by' 'email' '-' %}">Email</a></th>
 						<th class="{% url_replace request 'order_by' 'phone' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'phone' '-' %}">Phone</a></th>
 						{% if user.is_superuser %}
-						<th>Reporter</th>
+						<th class="{% url_replace request 'order_by' 'user__username' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'user__username' '-' %}">Reporter</a></th>
 						{% endif %}
+						<th class="{% url_replace request 'order_by' 'group__name' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'group__name' '-' %}">Group</a></th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -442,8 +446,9 @@ $(document).ready(function(){
                 <td>{{emp.email}}</td>
                 <td>{{emp.phone}}</td>
 				{% if user.is_superuser %}
-					<td>{{emp.user|capfirst}}</td>
+				<td>{{emp.user|capfirst}}</td>
 				{% endif %}
+                <td>{{emp.group}}</td>
                 <td>
 				  <a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="view employee-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
                   <a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="edit employee-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
@@ -454,9 +459,9 @@ $(document).ready(function(){
           {% else %}
           <tr align="center">
 		  	{% if user.is_superuser %}
-				<td colspan="8">
+				<td colspan="9">
 			{% else %}
-				<td colspan="7">
+				<td colspan="8">
 			{% endif %}
               No records Found!
             </td>
