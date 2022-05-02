@@ -374,9 +374,7 @@ $(document).ready(function(){
 					<div class="col-sm-6">
 						<a href="/logout" class="btn btn-info"><i class="material-icons logout"></i><span>Logout</span></a>
 						<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
-						{% if user.is_superuser %}
-							<a data-form="/employee/delete/" class="btn btn-danger employee-delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
-						{% endif %}
+						<a data-form="/employee/delete/" class="btn btn-danger employee-delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
 					</div>
 				</div>
 			</div>
@@ -384,19 +382,19 @@ $(document).ready(function(){
 				<thead>
 					<tr>
 						<th>
-							{% if user.is_superuser %}
-								<span class="custom-checkbox">
-									<input type="checkbox" id="selectAll">
-									<label for="selectAll"></label>
-								</span>
-							{% else %}
-							Sr.No.
-							{% endif %}
+							<span class="custom-checkbox">
+								<input type="checkbox" id="selectAll">
+								<label for="selectAll"></label>
+							</span>
 						</th>
+						<th>Sr.No.</th>
 						<th>Image</th>
 						<th>Name</th>
 						<th>Email</th>
 						<th>Phone</th>
+						{% if user.is_superuser %}
+						<th>Reporter</th>
+						{% endif %}
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -405,31 +403,33 @@ $(document).ready(function(){
             {% for emp in employees %}
               <tr>
                 <td>
-					{% if user.is_superuser %}
 					<span class="custom-checkbox">
 						<input type="checkbox" id="checkbox{{emp.id}}" name="options[]" value="{{emp.id}}">
 						<label for="checkbox{{emp.id}}"></label>
 					</span>
-					{% else %}
-					{{ forloop.counter0|add:employees.start_index}}
-					{% endif %}
                 </td>
+				<td>{{ forloop.counter0|add:employees.start_index}}</td>
 				<td><img src="{{emp.image.url}}" class="image-size" alt="Image"></td>
                 <td>{{emp.name}}</td>
                 <td>{{emp.email}}</td>
                 <td>{{emp.phone}}</td>
+				{% if user.is_superuser %}
+					<td>{{emp.user|capfirst}}</td>
+				{% endif %}
                 <td>
 				  <a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="view employee-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
                   <a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="edit employee-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-				  	{% if user.is_superuser %}
-					  	<a href="#deleteEmployeeModal" data-form="/employee/delete/{{emp.id}}" class="delete employee-delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-					{% endif %}
+				  <a href="#deleteEmployeeModal" data-form="/employee/delete/{{emp.id}}" class="delete employee-delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                 </td>
               </tr>
             {% endfor %}
           {% else %}
           <tr align="center">
-            <td colspan="6">
+		  	{% if user.is_superuser %}
+				<td colspan="8">
+			{% else %}
+				<td colspan="7">
+			{% endif %}
               No records Found!
             </td>
           </tr>
