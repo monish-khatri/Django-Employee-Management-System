@@ -5,6 +5,7 @@ from employee.models import Employee
 from django.contrib import messages
 from django.core import serializers
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -14,7 +15,10 @@ def employee(request):
             form = EmployeeForm(request.POST,request.FILES)
             if form.is_valid():
                 try:
-                    form.save()
+                    # To Store logged in user in the database directly
+                    obj = form.save(commit=False) # Return an object without saving to the DB
+                    obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
+                    obj.save() # Save the final "real form" to the DB
                     messages.success(request,'Employee Added Successfully!')
                     return redirect('/employee')
                 except:
@@ -29,7 +33,10 @@ def employee(request):
 
 def get(request):
     if is_authenticated(request):
-        employees = Employee.objects.all().order_by('-id')
+        if request.user.is_superuser:
+            employees = Employee.objects.all().order_by('-id')
+        else:
+            employees = Employee.objects.filter(user_id=request.user.id).order_by('-id')
         paginator = Paginator(employees, 5)
         page_number = request.GET.get('page',1)
         pageEmployee = paginator.get_page(page_number)
@@ -51,7 +58,10 @@ def edit(request, id):
             form = EmployeeForm(request.POST,request.FILES, instance = employee)
             if form.is_valid():
                 try:
-                    form.save()
+                    # To Store logged in user in the database directly
+                    obj = form.save(commit=False) # Return an object without saving to the DB
+                    obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
+                    obj.save() # Save the final "real form" to the DB
                     messages.success(request,'Employee Updated Successfully!')
                     return redirect('/employee')
                 except:

@@ -8,7 +8,7 @@ class Employee(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=12)
     image = models.ImageField(upload_to='employee/',default='employee/NoImage.png',blank=True)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     class Meta:
         db_table = "employee"
 
