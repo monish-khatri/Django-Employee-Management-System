@@ -110,7 +110,7 @@ def user_register(request):
             if form.is_valid():
                 try:
                     form.save()
-                    subject = 'EMS: Welcome to Employee Management System'
+                    subject = 'Biztech: Welcome to Employee Management System'
                     message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL)
                     send_mail(subject,message,'djnago@admin.com',[request.POST['email']],fail_silently=False)
                     messages.success(request,'User Added Successfully!')

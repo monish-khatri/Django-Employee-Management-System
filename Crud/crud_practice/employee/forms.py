@@ -29,15 +29,18 @@ class UserForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
+            visible.field.widget.attrs['class'] = 'form-control' if visible.name != 'is_superuser' else ''
     class Meta:
         model = User
-        fields = ['first_name', 'email','last_name','username','password1','password2']
+        fields = ['first_name','last_name','email','username','password1','password2','is_superuser']
 
     username = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'Username','id':'username'}))
+    first_name = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'First Name','id':'first_name'}))
+    last_name = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'Last Name','id':'last_name'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'Email Address','id':'email'}),required=True)
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Password','id':'password1'}),required=True)
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder':'Confirm Password','id':'password2'}),required=True)
+    is_superuser = forms.BooleanField(widget=forms.CheckboxInput(attrs={'id': 'is_superuser'}),required=False)
 
     def username_clean(self):
         username = self.cleaned_data['username'].lower()
@@ -63,8 +66,11 @@ class UserForm(UserCreationForm):
 
     def save(self, commit = True):
         user = User.objects.create_user(
-            self.cleaned_data['username'],
-            self.cleaned_data['email'],
-            self.cleaned_data['password1']
+            username=self.cleaned_data['username'],
+            password=self.cleaned_data['password1'],
+            email=self.cleaned_data['email'],
+            first_name=self.cleaned_data['first_name'],
+            last_name=self.cleaned_data['last_name'],
+            is_superuser=self.cleaned_data['is_superuser']
         )
         return user
