@@ -6,31 +6,32 @@
     {% for message in messages %}
         <div class="alert alert-dismissible alert-{{ message.tags }}">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>{{ message }}</h4>
+            <p>{{ message }}</p>
             <!-- <h4>{% if  message.tags == "danger" %}Whoops .!{% else %}Success{% endif %}</h4> -->
         </div>
     {% endfor %}
-    <blockquote>
+    <div id="accordion">
+        <h3>Filter Data</h3>
         <form action="">
-        <table class="table table-striped">
-            <tr>
-                <td>Filter By Title : </td>
-                <td><input name="searchTitle" value="{{ searchTitle|default:'' }}" placeholder="Enter Search Term" type="text" class="form-control"></td>
-                <td>Filter By Category : </td>
-                <td>
-                    <select name="searchCat" class="form-control searchCat">
-                        <option value="">Select Category</option>
-                        {% for cat in catData %}
-                        <option value="{{cat.id}}">{{cat}}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td><input type="submit" value="Search"></td>
-                <td><a href="/blog">Reset</a></td>
-            </tr>
-        </table>
+            <table class="table table-striped">
+                <tr>
+                    <td>Filter By Title : </td>
+                    <td><input name="searchTitle" value="{{ searchTitle|default:'' }}" placeholder="Enter Search Term" type="text" class="form-control"></td>
+                    <td>Filter By Category : </td>
+                    <td>
+                        <select name="searchCat" class="form-control searchCat">
+                            <option value="">Select Category</option>
+                            {% for cat in catData %}
+                            <option value="{{cat.id}}">{{cat}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input class="widget" type="submit" value="Search"></td>
+                    <td><a class="widget" href="/blog">Reset</a></td>
+                </tr>
+            </table>
         </form>
-    </blockquote>
+    </div>
     <table class="table table-bordered">
         <thead>
             <tr>

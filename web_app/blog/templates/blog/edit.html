@@ -13,6 +13,7 @@
     </div>
 {% endfor %}
 
+<h4>{{action}} Blog</h4><hr>
 {% if action == "Add" %}
 <form action="/blog/add/" method="post" enctype="multipart/form-data" novalidate>
 {% else %}
@@ -45,7 +46,7 @@
     <div class="form-group">
       <a href="/blog" class="btn btn-default">Cancel</a>
       <button type="reset" class="btn btn-default">Reset</button>
-      <button type="submit" class="btn btn-success">Submit</button>
+      <button type="submit" class="btn btn-success">{{action}} Data</button>
     </div>
 </form>
 

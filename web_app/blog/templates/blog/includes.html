@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://bootswatch.com/3/paper/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     <link href="/media/css/blog_custom.css" rel="stylesheet" />
     <!-- JS FILES-->
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
@@ -55,10 +56,16 @@
 <div class="container-fluide">
   <br>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function(){
+  $( "#accordion" ).accordion({
+    collapsible: true,
+  });
+  $( ".widget" ).button();
+  $( ".searchCat" ).selectmenu();
   $("#id_blog_category").select2();
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
