@@ -53,7 +53,7 @@ class UserForm(UserCreationForm):
         email = self.cleaned_data['email'].lower()
         new = User.objects.filter(email=email)
         if new.count():
-            raise ValidationError(" Email Already Exist")
+            raise ValidationError("Email Already Exist")
         return email
 
     def clean_password2(self):

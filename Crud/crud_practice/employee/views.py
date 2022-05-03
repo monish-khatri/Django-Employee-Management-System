@@ -114,12 +114,24 @@ def user_register(request):
                     message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL)
                     send_mail(subject,message,'djnago@admin.com',[request.POST['email']],fail_silently=False)
                     messages.success(request,'User Added Successfully!')
-                    return redirect('/employee')
+                    return redirect('/employee/users')
                 except:
                     messages.error(request,form.errors)
-                    return redirect('/employee')
+                    return redirect('/employee/users')
         else:
-            employees = get(request)
-            return render(request,"index.html",employees)
+            employees = get_user(request)
+            return render(request,"users.html",employees)
+    else:
+        return redirect('/login')
+
+def get_user(request):
+    if is_authenticated(request):
+        order_by = request.GET.get('order_by', '-id')
+        users = User.objects.all().order_by(order_by)
+        paginator = Paginator(users, 5)
+        page_number = request.GET.get('page',1)
+        pageUser = paginator.get_page(page_number)
+        pageUser.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+        return {'users':pageUser,'totalRecords': len(users),'UserForm':UserForm(),'order_by':order_by}
     else:
         return redirect('/login')

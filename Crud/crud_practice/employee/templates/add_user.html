@@ -3,7 +3,14 @@
 <div id="addUserModal" class="modal fade">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form id="addUserForm" action="user_register/" method="post" enctype="multipart/form-data">
+			{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+					{% endfor %}
+			</ul>
+			{% endif %}
+			<form id="addUserForm" action="/employee/users/" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="modal-header">
 					<h4 class="modal-title">Add User</h4>

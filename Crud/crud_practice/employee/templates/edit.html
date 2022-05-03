@@ -2,6 +2,13 @@
 <div id="editEmployeeModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
+			{% if messages %}
+				<ul>
+					{% for message in messages %}
+						<li>{{ message }}</li>
+						{% endfor %}
+				</ul>
+			{% endif %}
             <form id="editForm" action="/" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="modal-header">

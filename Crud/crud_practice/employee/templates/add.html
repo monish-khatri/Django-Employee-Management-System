@@ -3,6 +3,13 @@
 <div id="addEmployeeModal" class="modal fade">
 	<div class="modal-dialog">
 		<div class="modal-content">
+			{% if messages %}
+			<ul>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+					{% endfor %}
+			</ul>
+			{% endif %}
 			<form id="addForm" action="/employee/" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="modal-header">
