@@ -19,7 +19,7 @@ def index(request):
     else:
         blogs = Blog.objects.all().order_by('-blog_id')
 
-    paginator = Paginator(blogs, 5)
+    paginator = Paginator(blogs, 10)
     page_obj = paginator.get_page(page_number)
     params = {
         'blogData': page_obj,

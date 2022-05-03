@@ -137,3 +137,13 @@ label{
 .ui-widget .ui-widget{
   padding: 10px!important;
 }
+.container{
+  padding-right: 6.5rem;
+  padding-left: 6.5rem;
+}
+.ui-state-active{
+  background: #64626245;
+  font-size: 15px;
+  font-weight: normal;
+  color: black;
+}
