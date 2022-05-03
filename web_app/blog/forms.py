@@ -18,7 +18,9 @@ class EditBlog(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditBlog, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
+            if visible.name != 'blog_img':
+                visible.field.widget.attrs['class'] = 'form-control'
+                visible.field.widget.attrs['autocomplete'] = 'off'
 
         self.fields['blog_category'].error_messages.update({
             'required': 'Please Select Category for Blog',

@@ -1,2 +1,0 @@
-This is some static file stored in
-web_app/blog/templates/static/blog/mystatic.txt

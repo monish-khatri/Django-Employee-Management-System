@@ -10,6 +10,27 @@
             <!-- <h4>{% if  message.tags == "danger" %}Whoops .!{% else %}Success{% endif %}</h4> -->
         </div>
     {% endfor %}
+    <blockquote>
+        <form action="">
+        <table class="table table-striped">
+            <tr>
+                <td>Filter By Title : </td>
+                <td><input name="searchTitle" value="{{ searchTitle|default:'' }}" placeholder="Enter Search Term" type="text" class="form-control"></td>
+                <td>Filter By Category : </td>
+                <td>
+                    <select name="searchCat" class="form-control searchCat">
+                        <option value="">Select Category</option>
+                        {% for cat in catData %}
+                        <option value="{{cat.id}}">{{cat}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="submit" value="Search"></td>
+                <td><a href="/blog">Reset</a></td>
+            </tr>
+        </table>
+        </form>
+    </blockquote>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -92,5 +113,8 @@
                 }
             })
         })
+        {% if searchCat %}
+        $(".searchCat").val({{searchCat}})
+        {% endif %}
     </script>
 {% endblock %}

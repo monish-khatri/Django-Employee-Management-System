@@ -6,16 +6,29 @@ from .forms import ContactForm, EditBlog
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 
-def index(request, page=1):
-    blogs = Blog.objects.all().order_by('-blog_id')
-    paginator = Paginator(blogs, 5)
+def index(request):
     page_number = request.GET.get('page')
+    searchTitle = request.GET.get('searchTitle')
+    searchCat = request.GET.get('searchCat', '')
+    catData = Category.objects.all().order_by('-id')
+
+    if searchTitle or searchCat:
+        blogs = Blog.objects.filter(blog_title__icontains=searchTitle).order_by('-blog_id')
+        if searchCat:
+            blogs = Blog.objects.filter(blog_title__icontains=searchTitle,blog_category=searchCat).order_by('-blog_id')
+    else:
+        blogs = Blog.objects.all().order_by('-blog_id')
+
+    paginator = Paginator(blogs, 5)
     page_obj = paginator.get_page(page_number)
     params = {
-            'blogData': page_obj,
-            'countCurrent': len(page_obj),
-            'count':len(blogs),
-        }
+        'blogData': page_obj,
+        'countCurrent': len(page_obj),
+        'count':len(blogs),
+        'catData':catData,
+        'searchTitle':searchTitle,
+        'searchCat':searchCat,
+    }
     return render(request, 'blog/index.html', params)
 
 def viewblog(request, id):
@@ -41,7 +54,7 @@ def addblog(request):
             return redirect('/blog')
         else:
             messages.error(request, form.errors)
-            return redirect('/blog/add')
+            return render(request, 'blog/edit.html', params)
     else:
         return render(request, 'blog/edit.html', params)
 
