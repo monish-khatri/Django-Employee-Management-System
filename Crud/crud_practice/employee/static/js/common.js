@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	$('.delete-multiple').hide()
 	// Activate tooltip
 	$('[data-toggle="tooltip"]').tooltip();
 
@@ -9,15 +10,20 @@ $(document).ready(function(){
 			checkbox.each(function(){
 				this.checked = true;
 			});
+			$('.delete-multiple').show()
 		} else{
 			checkbox.each(function(){
 				this.checked = false;
 			});
+			$('.delete-multiple').hide()
 		}
 	});
 	checkbox.click(function(){
 		if(!this.checked){
+			$('.delete-multiple').hide()
 			$("#selectAll").prop("checked", false);
+		}else{
+			$('.delete-multiple').show()
 		}
 	});
 	function getCookie(name) {
@@ -77,12 +83,12 @@ $(document).ready(function(){
             }
         });
     });
-	$(".employee-delete, .user-delete").click(function(ev) {
+	$(".delete-single").click(function(ev) {
         var url = $(this).data("form");
 		$("#deleteForm").attr('action',url)
     });
 
-	$(".employee-delete-multiple , .user-delete-multiple").click(function(ev) {
+	$(".delete-multiple").click(function(ev) {
 		var url = $(this).data("form");
 		var deleteSelected = ''
 		checkbox.each(function(){
