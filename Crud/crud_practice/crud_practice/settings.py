@@ -27,7 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
    '*'
 ]
-
+APP_URL = 'http://192.168.1.120:8000/'
 
 # Application definition
 
@@ -149,3 +149,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#Email setup
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'monish.k@int.biztechcs.com'
+EMAIL_HOST_PASSWORD = 'Messi@may2022'

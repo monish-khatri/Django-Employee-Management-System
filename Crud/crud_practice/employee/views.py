@@ -1,13 +1,14 @@
 from tokenize import group
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from employee.forms import EmployeeForm
+from employee.forms import EmployeeForm,UserForm
 from employee.models import Employee,EmployeeGroup
 from django.contrib import messages
 from django.core import serializers
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
-
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 def employee(request):
@@ -44,7 +45,7 @@ def get(request):
         page_number = request.GET.get('page',1)
         pageEmployee = paginator.get_page(page_number)
         pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return {'employees':pageEmployee,'totalRecords': len(employees),'EmployeeForm':EmployeeForm(),'order_by':order_by}
+        return {'employees':pageEmployee,'totalRecords': len(employees),'EmployeeForm':EmployeeForm(),'UserForm':UserForm(),'order_by':order_by}
     else:
         return redirect('/login')
 
@@ -101,3 +102,24 @@ def is_authenticated(request):
         return True
     else:
         return False
+
+def user_register(request):
+    if is_authenticated(request):
+        if request.method == "POST":
+            form = UserForm(request.POST,request.FILES)
+            if form.is_valid():
+                try:
+                    form.save()
+                    subject = 'EMS: Welcome to Employee Management System'
+                    message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL)
+                    send_mail(subject,message,'djnago@admin.com',[request.POST['email']],fail_silently=False)
+                    messages.success(request,'User Added Successfully!')
+                    return redirect('/employee')
+                except:
+                    messages.error(request,form.errors)
+                    return redirect('/employee')
+        else:
+            employees = get(request)
+            return render(request,"index.html",employees)
+    else:
+        return redirect('/login')

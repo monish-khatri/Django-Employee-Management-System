@@ -276,6 +276,10 @@ table.table .avatar {
 	height: 100px;
 	width: 100px;
 }
+.table-title .btn-group {
+    float: right;
+    margin-left: 10px;
+}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -414,9 +418,19 @@ $(document).ready(function(){
 					<div class="col-sm-6">
 						<a href="/logout" class="btn btn-info"><i class="material-icons logout"></i><span>Logout</span></a>
 						{% if user.is_superuser %}
-						<a href="#addUserModal" class="btn btn-info" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add User</span></a>
-						{% endif %}
+						<div class="btn-group">
+							<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="material-icons">&#xE147;</i> Add
+							</button>
+							<div class="dropdown-menu">
+								<a href="#addUserModal" class="dropdown-item" data-toggle="modal"><span>Add User</span></a>
+								<div class="dropdown-divider"></div>
+								<a href="#addEmployeeModal" class="dropdown-item" data-toggle="modal"><span>Add Employee</span></a>
+							</div>
+						  </div>
+						{%else%}
 						<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add Employee</span></a>
+						{% endif %}
 					{% if employees %}
 						<a data-form="/employee/delete/" class="btn btn-danger employee-delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
 					{% endif %}
