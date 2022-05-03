@@ -96,6 +96,22 @@ def delete(request, str):
     else:
         return redirect('/login')
 
+def user_delete(request, str):
+    if is_authenticated(request):
+        str = str.rstrip(',')
+        idList = [int(x) for x in str.split(',')]
+        try:
+            for id in idList:
+                user = User.objects.get(id=id)
+                user.delete()
+            messages.success(request,'Users Deleted Successfully!')
+            return redirect('/employee/users')
+        except:
+            messages.error(request,'Something Went Wrong!')
+            return redirect('/employee/users')
+    else:
+        return redirect('/login')
+
 
 def is_authenticated(request):
     if request.user.is_authenticated:

@@ -77,12 +77,12 @@ $(document).ready(function(){
             }
         });
     });
-	$(".employee-delete").click(function(ev) {
+	$(".employee-delete, .user-delete").click(function(ev) {
         var url = $(this).data("form");
 		$("#deleteForm").attr('action',url)
     });
 
-	$(".employee-delete-multiple").click(function(ev) {
+	$(".employee-delete-multiple , .user-delete-multiple").click(function(ev) {
 		var url = $(this).data("form");
 		var deleteSelected = ''
 		checkbox.each(function(){
@@ -92,7 +92,7 @@ $(document).ready(function(){
 		});
 		if (deleteSelected != ''){
 			$("#deleteForm").attr('action',url+deleteSelected)
-			$('#deleteEmployeeModal').modal('show')
+			$('#deleteModal').modal('show')
 		}
     });
 	$(".clear-add-form").click(function(){
