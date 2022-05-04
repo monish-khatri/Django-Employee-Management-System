@@ -115,6 +115,7 @@ def user_delete(request, str):
 
 def is_authenticated(request):
     if request.user.is_authenticated:
+        request.session.modified = True
         return True
     else:
         return False
