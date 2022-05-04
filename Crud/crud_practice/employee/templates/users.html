@@ -51,6 +51,7 @@
 					<th class="{% url_replace request 'order_by' 'username' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'username' '-' %}">Username</a></th>
 					<th class="{% url_replace request 'order_by' 'email' '-' 'True' %} header-class" ><a href="?{% url_replace request 'order_by' 'email' '-' %}">Email</a></th>
 					<th class="{% url_replace request 'order_by' 'is_superuser' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'is_superuser' '-' %}">Super User</a></th>
+					<th class="{% url_replace request 'order_by' 'is_active' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'is_active' '-' %}">Status</a></th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -69,6 +70,7 @@
 			<td>{{user.username|lower}}</td>
 			<td>{{user.email}}</td>
 			<td>{% if user.is_superuser %}<i class="material-icons verified" data-toggle="tooltip" title="Super User"></i>{% else %}<i class="material-icons dangerous" data-toggle="tooltip" title="Normal User"></i>{%endif%}</td>
+			<td>{% if user.is_active %}<i class="material-icons verified check_circle" data-toggle="tooltip" title="Active"></i>{% else %}<i class="material-icons cancel dangerous" data-toggle="tooltip" title="In-active"></i>{%endif%}</td>
 			<td>
 			  <a data-form="/employee/edit_user/{{user.id}}" data-id="{{user.id}}" class="view user-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
 			  <a data-form="/employee/edit_user/{{user.id}}" data-id="{{user.id}}" class="edit user-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>

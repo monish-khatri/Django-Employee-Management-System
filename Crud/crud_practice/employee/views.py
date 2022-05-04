@@ -100,15 +100,26 @@ def user_delete(request, str):
     if is_authenticated(request):
         str = str.rstrip(',')
         idList = [int(x) for x in str.split(',')]
-        try:
-            for id in idList:
-                user = User.objects.get(id=id)
+        idList.sort(reverse=True)
+        lastAdminDelete = 0
+        for id in idList:
+            superuser = User.objects.filter(is_superuser=True)
+            user = User.objects.get(id=id)
+            if (len(superuser)>1 and user.is_superuser) or not user.is_superuser:
                 user.delete()
+            else:
+                lastUserName = user.get_full_name()
+                lastAdminDelete+=1
+                continue
+
+        if lastAdminDelete !=0 and len(idList)>1:
+            messages.info(request,"Cannot delete \"{}\" because it's the last user with Admin rights".format(lastUserName))
             messages.success(request,'Users Deleted Successfully!')
-            return redirect('/employee/users')
-        except:
-            messages.error(request,'Something Went Wrong!')
-            return redirect('/employee/users')
+        elif len(idList) == 1 and lastAdminDelete !=0:
+            messages.info(request,"Cannot delete \"{}\" because it's the last user with Admin rights".format(lastUserName))
+        else:
+            messages.success(request,'Users Deleted Successfully!')
+        return redirect('/employee/users')
     else:
         return redirect('/login')
 
@@ -135,6 +146,9 @@ def user_register(request):
                 except:
                     messages.error(request,form.errors)
                     return redirect('/employee/users')
+            else:
+                messages.error(request,form.errors)
+                return redirect('/employee/users')
         else:
             users = get_user(request)
             return render(request,"users.html",users)
