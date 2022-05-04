@@ -41,13 +41,15 @@ def register(request):
 
 def login(request):
     if request.user.is_authenticated:
+        
         return redirect('/employee')
     else:
         if request.method == 'POST':
+
             username = request.POST['username']
             password = request.POST['password']
             user = auth.authenticate(username=username, password=password)
-
+            print(request.POST)
             if user is not None:
                 auth.login(request, user)
                 return redirect('/employee')

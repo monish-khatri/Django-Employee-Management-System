@@ -1,7 +1,7 @@
 from tokenize import group
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from employee.forms import EmployeeForm,UserForm
+from employee.forms import EmployeeForm,UserForm,UserUpdateForm
 from employee.models import Employee,EmployeeGroup
 from django.contrib import messages
 from django.core import serializers
@@ -149,7 +149,7 @@ def get_user(request):
         page_number = request.GET.get('page',1)
         pageUser = paginator.get_page(page_number)
         pageUser.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return {'users':pageUser,'totalRecords': len(users),'UserForm':UserForm(),'order_by':order_by}
+        return {'users':pageUser,'totalRecords': len(users),'UserForm':UserForm(),'UserUpdateForm':UserUpdateForm(),'order_by':order_by}
     else:
         return redirect('/login')
 
@@ -162,7 +162,7 @@ def edit_user(request, id):
             return HttpResponse(jsonObject)
         else:
             user = User.objects.get(id=id)
-            form = UserForm(request.POST,instance = user)
+            form = UserUpdateForm(request.POST,instance = user)
             if form.is_valid():
                 try:
                     form.save()

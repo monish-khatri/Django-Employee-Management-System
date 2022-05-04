@@ -311,20 +311,23 @@ table.table .avatar {
 			<div class="collapse navbar-collapse" id="navbarText">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
-						<a class="nav-link" href="/" target="_blank"><img src="https://pm.biztechconsultancy.com/assets/img/favicon.ico" class="biztech-logo" alt="Logo"></a>
+						<a class="nav-link" href="/"><img src="https://pm.biztechconsultancy.com/assets/img/favicon.ico" class="biztech-logo" alt="Logo"></a>
 					</li>
-					{% if user.is_superuser %}
-					<li class="nav-item">
-						<a class="nav-link" href="/employee/users">Users</a>
-					</li>
+					{% if user.is_authenticated %}
+						{% if user.is_superuser %}
+						<li class="nav-item">
+							<a class="nav-link" href="/employee/users">Users</a>
+						</li>
+						{% endif %}
+						<li class="nav-item">
+							<a class="nav-link" href="/employee">Employees</a>
+						</li>
+					</ul>
+					<!-- Welcome, {{user.first_name}} {{user.last_name}} -->
+					<a href="/logout" class="btn btn-info"><span><i class="fa fa-sign-out" aria-hidden="true"></i>
+						Logout</span></a>
 					{% endif %}
-					<li class="nav-item">
-						<a class="nav-link" href="/employee">Employee</a>
-					</li>
-				</ul>
-				<!-- Welcome, {{user.first_name}} {{user.last_name}} -->
-				<a href="/logout" class="btn btn-info"><span><i class="fa fa-sign-out" aria-hidden="true"></i>
-					Logout</span></a>
+
 			</div>
         </nav>
     </div>

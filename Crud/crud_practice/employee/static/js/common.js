@@ -117,11 +117,11 @@ $(document).ready(function(){
             success: function(data) {
 				$("#editForm").attr('action','/employee/edit_user/'+ id)
 				var user = data[0].fields
-				$("#username").val(user.username)
-				$("#first_name").val(user.first_name)
-				$("#last_name").val(user.last_name)
-				$("#email").val(user.email)
-				$("#is_superuser").val(user.is_superuser)
+				$("#edit-username").val(user.username)
+				$("#edit-first_name").val(user.first_name)
+				$("#edit-last_name").val(user.last_name)
+				$("#edit-email").val(user.email)
+				$("#edit-is_superuser").prop('checked', user.is_superuser);
 				$('#editUserModal').modal('show')
             }
         });
@@ -134,15 +134,15 @@ $(document).ready(function(){
             url: url,
 			dataType: 'json',
             success: function(data) {
-				var emp = data[0].fields
+				var user = data[0].fields
 				var userType = "Normal User"
-				if (emp.is_superuser){
+				if (user.is_superuser){
 					userType = "Super User"
 				}
-				$("#view-username").val(emp.username)
-				$("#view-email").val(emp.email)
-				$("#view-first-name").val(emp.first_name)
-				$("#view-last-name").val(emp.last_name)
+				$("#view-username").val(user.username)
+				$("#view-email").val(user.email)
+				$("#view-first-name").val(user.first_name)
+				$("#view-last-name").val(user.last_name)
 				$("#view-type").val(userType)
 				$('#viewUserModal').modal('show')
             }

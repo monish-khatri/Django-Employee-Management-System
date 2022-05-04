@@ -2,7 +2,7 @@ from cProfile import label
 from django import forms
 from employee.models import Employee,EmployeeGroup
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm  
+from django.contrib.auth.forms import UserCreationForm,UserChangeForm 
 from django.core.exceptions import ValidationError  
 
 
@@ -74,3 +74,18 @@ class UserForm(UserCreationForm):
             is_superuser=self.cleaned_data['is_superuser']
         )
         return user
+
+class UserUpdateForm(UserChangeForm):
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control' if visible.name != 'is_superuser' else ''
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','email','username','is_superuser']
+
+    username = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'Username','id':'edit-username'}))
+    first_name = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'First Name','id':'edit-first_name'}))
+    last_name = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'Last Name','id':'edit-last_name'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'Email Address','id':'edit-email'}),required=True)
+    is_superuser = forms.BooleanField(widget=forms.CheckboxInput(attrs={'id': 'edit-is_superuser'}),required=False)
