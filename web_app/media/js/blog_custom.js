@@ -1,9 +1,10 @@
 $(document).ready(function(){
+  
     $( document ).tooltip();
+
     $('#blogIndex').DataTable({
       "searching": false,
       "paging": false,
-      
       "aoColumns":[
           {"bSortable": false},
           {"bSortable": false},
@@ -17,8 +18,13 @@ $(document).ready(function(){
     });
     $( ".widget" ).button();
     $( ".searchCat" ).selectmenu();
-    $("#id_blog_category").select2();
     $(function () {
       $('[data-toggle="tooltip"]').tooltip();
     })
+
+    /** Select2 **/
+    $("#id_blog_category").select2();
+    $("#id_blog_tags").select2({
+      tags: true,
+    });
   });
