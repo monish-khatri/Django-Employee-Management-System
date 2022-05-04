@@ -104,4 +104,48 @@ $(document).ready(function(){
 	$(".clear-add-form").click(function(){
 		$('#addForm').trigger("reset");
 	})
+	$(".user-edit").click(function(ev) {
+        ev.preventDefault();
+        var url = $(this).data("form");
+        var id = $(this).data("id");
+		const csrftoken = getCookie('csrftoken');
+		$.ajax({
+            type: 'GET',
+			headers: {'X-CSRFToken': csrftoken},
+            url: url,
+			dataType: 'json',
+            success: function(data) {
+				$("#editForm").attr('action','/employee/edit_user/'+ id)
+				var user = data[0].fields
+				$("#username").val(user.username)
+				$("#first_name").val(user.first_name)
+				$("#last_name").val(user.last_name)
+				$("#email").val(user.email)
+				$("#is_superuser").val(user.is_superuser)
+				$('#editUserModal').modal('show')
+            }
+        });
+        return false;
+    });
+	$(".user-view").click(function(ev) {
+        var url = $(this).data("form");
+		$.ajax({
+            type: 'GET',
+            url: url,
+			dataType: 'json',
+            success: function(data) {
+				var emp = data[0].fields
+				var userType = "Normal User"
+				if (emp.is_superuser){
+					userType = "Super User"
+				}
+				$("#view-username").val(emp.username)
+				$("#view-email").val(emp.email)
+				$("#view-first-name").val(emp.first_name)
+				$("#view-last-name").val(emp.last_name)
+				$("#view-type").val(userType)
+				$('#viewUserModal').modal('show')
+            }
+        });
+    });
 });

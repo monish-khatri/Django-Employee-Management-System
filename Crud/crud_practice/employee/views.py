@@ -135,8 +135,8 @@ def user_register(request):
                     messages.error(request,form.errors)
                     return redirect('/employee/users')
         else:
-            employees = get_user(request)
-            return render(request,"users.html",employees)
+            users = get_user(request)
+            return render(request,"users.html",users)
     else:
         return redirect('/login')
 
@@ -149,5 +149,29 @@ def get_user(request):
         pageUser = paginator.get_page(page_number)
         pageUser.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
         return {'users':pageUser,'totalRecords': len(users),'UserForm':UserForm(),'order_by':order_by}
+    else:
+        return redirect('/login')
+
+def edit_user(request, id):
+    if is_authenticated(request):
+        if request.method == "GET":
+            user = User.objects.get(id=id)
+            # Convert modal instance to json format
+            jsonObject = serializers.serialize('json', [user])
+            return HttpResponse(jsonObject)
+        else:
+            user = User.objects.get(id=id)
+            form = UserForm(request.POST,instance = user)
+            if form.is_valid():
+                try:
+                    form.save()
+                    messages.success(request,'User Updated Successfully!')
+                    return redirect('/employee/users')
+                except:
+                    messages.error(request,'Something Went Wrong!')
+                    return redirect('/employee/users')
+            else:
+                users = get_user(request)
+                return render(request,"users.html",users)
     else:
         return redirect('/login')
