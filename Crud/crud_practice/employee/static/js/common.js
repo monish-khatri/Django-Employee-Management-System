@@ -122,6 +122,7 @@ $(document).ready(function(){
 				$("#edit-last_name").val(user.last_name)
 				$("#edit-email").val(user.email)
 				$("#edit-is_superuser").prop('checked', user.is_superuser);
+				$("#edit-is_active").prop('checked', user.is_active);
 				$('#editUserModal').modal('show')
             }
         });
@@ -136,13 +137,18 @@ $(document).ready(function(){
             success: function(data) {
 				var user = data[0].fields
 				var userType = "Normal User"
+				var userActive = "In-active"
 				if (user.is_superuser){
 					userType = "Super User"
+				}
+				if (user.is_active){
+					userActive = "Active"
 				}
 				$("#view-username").val(user.username)
 				$("#view-email").val(user.email)
 				$("#view-first-name").val(user.first_name)
 				$("#view-last-name").val(user.last_name)
+				$("#view-status").val(userActive)
 				$("#view-type").val(userType)
 				$('#viewUserModal').modal('show')
             }

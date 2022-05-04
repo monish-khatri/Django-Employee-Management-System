@@ -79,13 +79,14 @@ class UserUpdateForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
         super(UserUpdateForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control' if visible.name != 'is_superuser' else ''
+            visible.field.widget.attrs['class'] = 'form-control' if visible.name != 'is_superuser' and visible.name != 'is_active' else ''
     class Meta:
         model = User
-        fields = ['first_name','last_name','email','username','is_superuser']
+        fields = ['first_name','last_name','email','username','is_superuser','is_active']
 
     username = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'Username','id':'edit-username'}))
     first_name = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'First Name','id':'edit-first_name'}))
     last_name = forms.CharField(min_length=3,max_length=50,required=True,widget=forms.TextInput(attrs={'placeholder':'Last Name','id':'edit-last_name'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'Email Address','id':'edit-email'}),required=True)
     is_superuser = forms.BooleanField(widget=forms.CheckboxInput(attrs={'id': 'edit-is_superuser'}),required=False)
+    is_active = forms.BooleanField(widget=forms.CheckboxInput(attrs={'id': 'edit-is_active'}),required=False)
