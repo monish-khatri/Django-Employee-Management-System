@@ -1,0 +1,14 @@
+.idea/
+.vscode/
+Crud/crud_practice/accounts/migrations/__pycache__/
+Crud/crud_practice/crud_practice/__pycache__/
+Crud/crud_practice/employee/migrations/__pycache__/
+Crud/crud_practice/media/
+Crud/crud_practice/employee/__pycache__/
+
+Travello/accounts/migrations/__pycache__/
+Travello/accounts/__pycache__/
+Travello/blog/migrations/__pycache__/
+Travello/blog/__pycache__/
+Travello/first_app/__pycache__/
+Travello/media/
