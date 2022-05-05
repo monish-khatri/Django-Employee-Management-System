@@ -30,6 +30,7 @@ class Employee(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
     group = models.ForeignKey(EmployeeGroup,on_delete=models.CASCADE,null=True)
+    date_of_birth = models.DateField(null=True,blank=True)
     class Meta:
         db_table = "employee"
 

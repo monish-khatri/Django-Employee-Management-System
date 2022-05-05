@@ -1,7 +1,5 @@
 $(document).ready(function(){
 	$('.delete-multiple').hide()
-	// Activate tooltip
-	$('[data-toggle="tooltip"]').tooltip();
 
 	// Select/Deselect checkboxes
 	var checkbox = $('table tbody input[type="checkbox"]');
@@ -59,6 +57,8 @@ $(document).ready(function(){
 				$("#phone").val(emp.phone)
 				$("#group").val(emp.group)
 				$("#edit-image").attr('src','/media/'+emp.image)
+				var dob = emp.date_of_birth.split("-")
+				$('#date_of_birth').data('daterangepicker').setStartDate(dob[1]+'/'+dob[2]+'/'+dob[0]);
 				$('#editEmployeeModal').modal('show')
             }
         });
@@ -73,16 +73,24 @@ $(document).ready(function(){
             success: function(data) {
 				var emp = data[0].fields
 				var grp = data[1].fields
-				console.log(grp.name)
 				$("#view-name").val(emp.name)
 				$("#view-email").val(emp.email)
 				$("#view-phone").val(emp.phone)
+				finalDate = DateFormatter(emp.date_of_birth)
+				$("#view-date_of_birth").val(finalDate)
 				$("#view-group").val(grp.name)
 				$("#view-image").attr('src','/media/'+emp.image)
 				$('#viewEmployeeModal').modal('show')
             }
         });
     });
+	function DateFormatter(date){
+		const unformatdate = new Date(date)
+		const formatyear = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(unformatdate)
+		const formatmonth = new Intl.DateTimeFormat('en', { month: 'long' }).format(unformatdate)
+		const formatdate = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(unformatdate)
+		return formatdate + ' '+ formatmonth + ' ' + formatyear
+	}
 	$(".delete-single").click(function(ev) {
         var url = $(this).data("form");
 		$("#deleteForm").attr('action',url)
@@ -123,6 +131,7 @@ $(document).ready(function(){
 				$("#edit-email").val(user.email)
 				$("#edit-is_superuser").prop('checked', user.is_superuser);
 				$("#edit-is_active").prop('checked', user.is_active);
+
 				$('#editUserModal').modal('show')
             }
         });
@@ -154,4 +163,15 @@ $(document).ready(function(){
             }
         });
     });
+	$('input[name="date_of_birth"]').daterangepicker({
+		autoApply: true,
+		singleDatePicker: true,
+		showDropdowns: true,
+		minYear: 1979,
+		maxYear: parseInt(moment().format('YYYY')-18),
+		startDate: "23/08/1998",
+		locale: {
+			"format": "DD/MM/YYYY",
+		}
+	});
 });

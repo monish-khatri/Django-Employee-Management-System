@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm 
 from django.core.exceptions import ValidationError  
 
-
 class EmployeeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -23,6 +22,7 @@ class EmployeeForm(forms.ModelForm):
     phone = forms.IntegerField(min_value=10000000,max_value=999999999999,required=True,widget=forms.NumberInput(attrs={'placeholder':'Phone Number','id':'phone'}))
     image = forms.ImageField(allow_empty_file=True,required=False,widget=forms.FileInput(attrs={'id':'image'}))
     group = forms.ModelChoiceField(queryset=EmployeeGroup.objects.all(), label='Select Team', widget=forms.Select(attrs={'class': "form-control","id":"group"}), required=True)
+    date_of_birth = forms.DateField(required=True,widget=forms.DateInput(attrs={'type': 'text','id':'date_of_birth'}))
 
 
 class UserForm(UserCreationForm):
