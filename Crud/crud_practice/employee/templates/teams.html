@@ -1,0 +1,131 @@
+{% extends 'home.html' %}
+{% load custom_tags %}
+{% block content %}
+<div class="container-xl">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'info' %}
+        <div class="container alert alert-info alert-dismissible" role="alert">
+      {% elif message.tags == 'success' %}
+        <div class="container alert alert-success alert-dismissible" role="alert">
+      {% elif message.tags == 'error' %}
+        <div class="container alert alert-danger alert-dismissible" role="alert">
+      {% else %}
+        <div class="container alert alert-warning alert-dismissible" role="alert">
+      {% endif %}
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <center>
+                {{message}}
+            </center>
+        </div>
+    {% endfor %}
+  {% endif %}
+  <div class="table-responsive">
+	<div class="table-wrapper">
+		<div class="table-title">
+			<div class="row">
+				<div class="col-sm-6">
+					<h2>Manage <b>Teams</b></h2>
+				</div>
+				<div class="col-sm-6">
+					<a href="#addTeamModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add Team</span></a>
+				{% if teams %}
+					<a data-form="/employee/team_delete/" class="btn btn-danger delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
+				{% endif %}
+				</div>
+			</div>
+		</div>
+		<nav class="navbar search-btn">
+			<form class="form-inline" method="get">
+			  <input class="form-control mr-sm-2" id="searchName" type="search" name="search" placeholder="Search" aria-label="Search" value='{{searchName}}'>
+			  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</form>
+		</nav>
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>
+						{% if teams %}
+							<span class="custom-checkbox">
+								<input type="checkbox" id="selectAll">
+								<label for="selectAll"></label>
+							</span>
+						{% endif %}
+					</th>
+					<th>Sr.No.</th>
+					<th class="{% url_replace request 'order_by' 'name' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'name' '-' %}">Name</a></th>
+					<th class="{% url_replace request 'order_by' 'status' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'status' '-' %}">Status</a></th>
+					{% if user.is_superuser %}
+					<th>Actions</th>
+					{% endif %}
+				</tr>
+			</thead>
+			<tbody>
+	  {% if teams %}
+		{% for team in teams %}
+		  <tr>
+			<td>
+				<span class="custom-checkbox">
+					<input type="checkbox" id="checkbox{{team.id}}" name="options[]" value="{{team.id}}">
+					<label for="checkbox{{team.id}}"></label>
+				</span>
+			</td>
+			<td>{{ forloop.counter0|add:teams.start_index}}</td>
+			<td>{%if team.name != ''%}{{team.name|capfirst}}{% else %} N/A {%endif%}</td>
+			<td>{% if team.status == '1' %}<i class="material-icons verified check_circle" data-toggle="tooltip" title="Active"></i>{% else %}<i class="material-icons cancel dangerous" data-toggle="tooltip" title="In-active"></i>{%endif%}</td>
+			{% if user.is_superuser %}
+				<td>
+					<a data-form="/employee/edit_team/{{team.id}}" data-id="{{team.id}}" class="edit team-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+					<a href="#deleteModal" data-form="/employee/team_delete/{{team.id}}" class="delete delete-single" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+				</td>
+			{% endif %}
+		  </tr>
+		{% endfor %}
+	  {% else %}
+	  <tr align="center">
+		{% if user.is_superuser %}
+		<td colspan="5">
+		{% else %}
+		<td colspan="4">
+		{% endif %}
+		  No records Found!
+		</td>
+	  </tr>
+	  {% endif %}
+			</tbody>
+		</table>
+		<div class="clearfix">
+			<div class="hint-text">Showing <b>{{teams.start_index}} to {{teams.end_index}}</b> of <b>{{totalRecords}}</b> entries</div>
+			<div class="pagination">
+				<span class="step-links">
+					<ul class="pagination">
+						{% if teams.has_previous or teams.has_next %}
+							{% if teams.has_previous %}
+							<li class="page-item"><a href="?page=1&order_by={{order_by}}">First</a></li>
+								<li class="page-item"><a href="?page={{ teams.previous_page_number }}&order_by={{order_by}}">Previous</a></li>
+							{% endif %}
+							{% for page in teams.adjusted_elided_pages %}
+								{% if teams.number == page %}
+									<li class="page-item active"><a href="?page={{page}}&order_by={{order_by}}" class="page-link">{{page}}</a></li>
+								{% elif page == teams.paginator.ELLIPSIS %}
+									<li class="page-item"><a class="page-link">{{page}}</a></li>
+								{% else %}
+									<li class="page-item"><a href="?page={{page}}&order_by={{order_by}}" class="page-link">{{page}}</a></li>
+								{% endif %}
+							{% endfor %}
+							{% if teams.has_next %}
+								<li class="page-item"><a href="?page={{ teams.next_page_number }}&order_by={{order_by}}" class="page-link">Next</a></li>
+								<li class="page-item"><a href="?page={{ teams.paginator.num_pages }}&order_by={{order_by}}">Last</a></li>
+							{% endif %}
+						{% endif %}
+					</ul>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+	{% include 'delete.html' %}
+	{% include 'edit_team.html' %}
+	{% include 'add_team.html' %}
+{% endblock %}

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='EmployeeGroup',
+            name='EmployeeTeam',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(default='Group', max_length=50)),
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('image', models.ImageField(blank=True, default='employee/NoImage.png', upload_to='employee/')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('group', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='employee.employeegroup')),
+                ('group', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='employee.EmployeeTeam')),
                 ('user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={

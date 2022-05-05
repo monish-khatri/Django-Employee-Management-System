@@ -1,8 +1,8 @@
 from tokenize import group
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from employee.forms import EmployeeForm,UserForm,UserUpdateForm
-from employee.models import Employee,EmployeeGroup
+from employee.forms import EmployeeForm,UserForm,UserUpdateForm,EmployeeTeamForm
+from employee.models import Employee,EmployeeTeam
 from django.contrib import messages
 from django.core import serializers
 from django.core.paginator import Paginator
@@ -24,7 +24,7 @@ def employee(request):
                     obj = form.save(commit=False) # Return an object without saving to the DB
                     obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
                     obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
-                    obj.group = EmployeeGroup.objects.get(id=request.POST['group']) # Add an author field which will contain current user's id
+                    obj.team = EmployeeTeam.objects.get(id=request.POST['group']) # Add an author field which will contain current user's id
                     obj.save() # Save the final "real form" to the DB
                     messages.success(request,'Employee Added Successfully!')
                     return redirect('/employee')
@@ -62,9 +62,9 @@ def edit(request, id):
     if is_authenticated(request):
         if request.method == "GET":
             employee = Employee.objects.get(id=id)
-            group = EmployeeGroup.objects.get(name=employee.group)
+            team = EmployeeTeam.objects.get(name=employee.team)
             # Convert modal instance to json format
-            jsonObject = serializers.serialize('json', [ employee , group])
+            jsonObject = serializers.serialize('json', [ employee , team])
             return HttpResponse(jsonObject)
         else:
             employee = Employee.objects.get(id=id)
@@ -74,7 +74,7 @@ def edit(request, id):
                     # To Store logged in user in the database directly
                     obj = form.save(commit=False) # Return an object without saving to the DB
                     obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
-                    obj.group = EmployeeGroup.objects.get(id=request.POST['group']) # Add an author field which will contain current user's id
+                    obj.team = EmployeeTeam.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
                     obj.save() # Save the final "real form" to the DB
                     messages.success(request,'Employee Updated Successfully!')
                     return redirect('/employee')
@@ -204,5 +204,73 @@ def edit_user(request, id):
             else:
                 users = get_user(request)
                 return render(request,"users.html",users)
+    else:
+        return redirect('/login')
+
+
+def teams(request):
+    if is_authenticated(request):
+        if request.method == "POST":
+            form = EmployeeTeamForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request,'Team Added Successfully!')
+                return redirect('/employee/teams')
+            else:
+                messages.error(request,form.errors)
+                return redirect('/employee/teams')
+        else:
+            teams = get_teams(request)
+            return render(request,"teams.html",teams)
+    else:
+        return redirect('/login')
+
+
+def get_teams(request):
+    if is_authenticated(request):
+        order_by = request.GET.get('order_by', 'name')
+        searchName = request.GET.get('search','')
+        teams = EmployeeTeam.objects.filter(name__icontains=searchName).order_by(order_by)
+        paginator = Paginator(teams, 5)
+        page_number = request.GET.get('page',1)
+        pageTeams = paginator.get_page(page_number)
+        pageTeams.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+        return {'teams':pageTeams,'totalRecords': len(teams),'EmployeeTeamForm':EmployeeTeamForm(),'order_by':order_by,'searchName':searchName}
+    else:
+        return redirect('/login')
+
+def team_delete(request, str):
+    if is_authenticated(request):
+        str = str.rstrip(',')
+        idList = [int(x) for x in str.split(',')]
+        for id in idList:
+            team = EmployeeTeam.objects.get(id=id)
+            team.delete()
+
+            messages.success(request,'Teams Deleted Successfully!')
+        return redirect('/employee/teams')
+    else:
+        return redirect('/login')
+
+def team_edit(request, id):
+    if is_authenticated(request):
+        if request.method == "GET":
+            team = EmployeeTeam.objects.get(id=id)
+            jsonObject = serializers.serialize('json', [ team ])
+            return HttpResponse(jsonObject)
+        else:
+            team = EmployeeTeam.objects.get(id=id)
+            form = EmployeeTeamForm(request.POST,instance = team)
+            if form.is_valid():
+                try:
+                    form.save()
+                    messages.success(request,'Team Updated Successfully!')
+                    return redirect('/employee/teams')
+                except:
+                    messages.error(request,'Something Went Wrong!')
+                    return redirect('/employee/teams')
+            else:
+                teams = get_teams(request)
+                return render(request,"teams.html",teams)
     else:
         return redirect('/login')

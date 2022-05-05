@@ -63,7 +63,7 @@
 						{% if user.is_superuser %}
 						<th class="{% url_replace request 'order_by' 'user__username' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'user__username' '-' %}">Reporter</a></th>
 						{% endif %}
-						<th class="{% url_replace request 'order_by' 'group__name' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'group__name' '-' %}">Group</a></th>
+						<th class="{% url_replace request 'order_by' 'team__name' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'team__name' '-' %}">Team</a></th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -85,7 +85,7 @@
 				{% if user.is_superuser %}
 				<td>{{emp.user|capfirst}}</td>
 				{% endif %}
-				<td>{{emp.group}}</td>
+				<td>{{emp.team}}</td>
 				<td>
 				<a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="view employee-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
 				<a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="edit employee-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>

@@ -1,0 +1,28 @@
+<!-- Edit Modal HTML -->
+<div id="editTeamModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editForm" action="/" method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h4 class="modal-title">Update Team</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Name</label>
+						{{EmployeeTeamForm.name}}
+					</div>
+					<div class="form-group">
+						<label>Status</label>
+						{{EmployeeTeamForm.status}}
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default clear-add-form" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-success" value="Update">
+				</div>
+			</form>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 from cProfile import label
 from django import forms
-from employee.models import Employee,EmployeeGroup
+from employee.models import Employee,EmployeeTeam
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm 
 from django.core.exceptions import ValidationError  
@@ -21,7 +21,7 @@ class EmployeeForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'Email Address','id':'email'}),required=True)
     phone = forms.IntegerField(min_value=10000000,max_value=999999999999,required=True,widget=forms.NumberInput(attrs={'placeholder':'Phone Number','id':'phone'}))
     image = forms.ImageField(allow_empty_file=True,required=False,widget=forms.FileInput(attrs={'id':'image'}))
-    group = forms.ModelChoiceField(queryset=EmployeeGroup.objects.all(), label='Select Team', widget=forms.Select(attrs={'class': "form-control","id":"group"}), required=True)
+    team = forms.ModelChoiceField(queryset=EmployeeTeam.objects.filter(status='1').order_by('name'), label='Select Team', widget=forms.Select(attrs={'class': "form-control","id":"team"}), required=True)
     date_of_birth = forms.DateField(required=True,widget=forms.DateInput(attrs={'type': 'text','id':'date_of_birth'}))
 
 
@@ -90,3 +90,16 @@ class UserUpdateForm(UserChangeForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'Email Address','id':'edit-email'}),required=True)
     is_superuser = forms.BooleanField(widget=forms.CheckboxInput(attrs={'id': 'edit-is_superuser'}),required=False)
     is_active = forms.BooleanField(widget=forms.CheckboxInput(attrs={'id': 'edit-is_active'}),required=False)
+
+
+class EmployeeTeamForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(EmployeeTeamForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+    class Meta:
+        model = EmployeeTeam
+        fields = ['name','status']
+
+    name = forms.CharField(max_length=50,widget=forms.TextInput(attrs={'id':'name'}))
+    status = forms.ChoiceField(choices=EmployeeTeam.STATUS,widget=forms.Select(attrs={'id':'status'}))

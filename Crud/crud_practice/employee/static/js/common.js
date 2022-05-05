@@ -55,11 +55,31 @@ $(document).ready(function(){
 				$("#name").val(emp.name)
 				$("#email").val(emp.email)
 				$("#phone").val(emp.phone)
-				$("#group").val(emp.group)
+				$("#team").val(emp.team)
 				$("#edit-image").attr('src','/media/'+emp.image)
 				var dob = emp.date_of_birth.split("-")
 				$('#date_of_birth').data('daterangepicker').setStartDate(dob[1]+'/'+dob[2]+'/'+dob[0]);
 				$('#editEmployeeModal').modal('show')
+            }
+        });
+        return false;
+    });
+	$(".team-edit").click(function(ev) {
+        ev.preventDefault();
+        var url = $(this).data("form");
+        var id = $(this).data("id");
+		const csrftoken = getCookie('csrftoken');
+		$.ajax({
+            type: 'GET',
+			headers: {'X-CSRFToken': csrftoken},
+            url: url,
+			dataType: 'json',
+            success: function(data) {
+				$("#editForm").attr('action','/employee/edit_team/'+ id)
+				var team = data[0].fields
+				$("#name").val(team.name)
+				$("#status").val(team.status)
+				$('#editTeamModal').modal('show')
             }
         });
         return false;
@@ -71,14 +91,15 @@ $(document).ready(function(){
             url: url,
 			dataType: 'json',
             success: function(data) {
+				debugger
 				var emp = data[0].fields
-				var grp = data[1].fields
+				var team = data[1].fields
 				$("#view-name").val(emp.name)
 				$("#view-email").val(emp.email)
 				$("#view-phone").val(emp.phone)
 				finalDate = DateFormatter(emp.date_of_birth)
 				$("#view-date_of_birth").val(finalDate)
-				$("#view-group").val(grp.name)
+				$("#view-team").val(team.name)
 				$("#view-image").attr('src','/media/'+emp.image)
 				$('#viewEmployeeModal').modal('show')
             }
@@ -168,7 +189,7 @@ $(document).ready(function(){
 		singleDatePicker: true,
 		showDropdowns: true,
 		minYear: 1979,
-		maxYear: parseInt(moment().format('YYYY')-18),
+		maxYear: parseInt(moment().format('YYYY')),
 		startDate: "23/08/1998",
 		locale: {
 			"format": "DD/MM/YYYY",
