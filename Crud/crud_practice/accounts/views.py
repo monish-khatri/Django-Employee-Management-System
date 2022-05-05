@@ -41,16 +41,18 @@ def register(request):
 
 def login(request):
     if request.user.is_authenticated:
-        
         return redirect('/employee')
     else:
         if request.method == 'POST':
 
             username = request.POST['username']
             password = request.POST['password']
+            remember_me = request.POST.get('remember','off')
             user = auth.authenticate(username=username, password=password)
             if user is not None:
                 auth.login(request, user)
+                if remember_me == 'on':
+                    request.session.set_expiry(60*60*24*7)
                 return redirect('/employee')
             else:
                 messages.error(request,'Incorrect username or password')
