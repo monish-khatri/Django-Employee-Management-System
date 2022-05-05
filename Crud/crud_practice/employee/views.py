@@ -31,6 +31,9 @@ def employee(request):
                 except:
                     messages.error(request,form.errors)
                     return redirect('/employee')
+            else:
+                messages.error(request,form.errors)
+                return redirect('/employee')
         else:
             employees = get(request)
             return render(request,"index.html",employees)
@@ -71,7 +74,6 @@ def edit(request, id):
                     # To Store logged in user in the database directly
                     obj = form.save(commit=False) # Return an object without saving to the DB
                     obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
-                    obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
                     obj.group = EmployeeGroup.objects.get(id=request.POST['group']) # Add an author field which will contain current user's id
                     obj.save() # Save the final "real form" to the DB
                     messages.success(request,'Employee Updated Successfully!')
