@@ -22,9 +22,10 @@ class EditBlog(forms.ModelForm):
                 visible.field.widget.attrs['class'] = 'form-control'
                 visible.field.widget.attrs['autocomplete'] = 'off'
 
-        self.fields['blog_category'].error_messages.update({
-            'required': 'Please Select Category for Blog',
-        })
+        self.fields['blog_category'].error_messages.update({'required': 'Please select Category for Blog',})
+        self.fields['blog_title'].error_messages.update({'required': 'Please add nice Title for Blog',})
+        self.fields['blog_desc'].error_messages.update({'required': 'Please add eyecatching Description for Blog',})
+        self.fields['blog_tags'].error_messages.update({'required': 'Please specify Tags for Blog',})
         
     class Meta:
         model = Blog
@@ -39,7 +40,7 @@ class EditBlog(forms.ModelForm):
             'multiple':'true',
             'class': "form-control"
             }), 
-        required=False
+        required=True
     )
     # blog_title = forms.CharField(label='Enter Blog Title', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
     # blog_desc = forms.CharField(label='Enter Blog Descritpion', widget=forms.Textarea(attrs={'class': "form-control"}))

@@ -36,7 +36,9 @@ def index(request):
 
 def viewblog(request, id):
     blogs = Blog.objects.get(blog_id=id)
+    tagCls = ['danger', 'warning', 'info', 'default', 'success']
     params = {
+        'tagClass':tagCls,
         'blogData': blogs,
         'blogTags': blogs.blog_tags.all()
     }

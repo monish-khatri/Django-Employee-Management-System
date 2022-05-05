@@ -5,7 +5,7 @@
 <div class="blog-section">
     <h3>{{blogData.blog_title}}</h3>
     <p>- {{blogData.blog_category}}</p>
-    {% for tag in blogTags %}<span class="label label-danger">{{tag}}</span>&nbsp;&nbsp;{% endfor %}
+    {% for tag in blogTags %}<span class="label label-{{tagClass|random}}">{{tag}}</span>&nbsp;&nbsp;{% endfor %}
     <hr>
     <img style="width: 100%; max-height:250px" src="/media/{{blogData.blog_img}}" alt="No Preview Available" class="img-thumbnail">
     <!-- {{blogData.blog_desc|safe}} -->
