@@ -9,6 +9,8 @@ from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db.models import Q
+
 
 # Create your views here.
 def employee(request):
@@ -37,15 +39,16 @@ def employee(request):
 def get(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', '-id')
+        searchName = request.GET.get('search','')
         if request.user.is_superuser:
-            employees = Employee.objects.all().order_by(order_by)
+            employees = Employee.objects.filter(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName)).order_by(order_by)
         else:
-            employees = Employee.objects.filter(user_id=request.user.id).order_by(order_by)
+            employees = Employee.objects.filter(Q(user_id=request.user.id),(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName))).order_by(order_by)
         paginator = Paginator(employees, 5)
         page_number = request.GET.get('page',1)
         pageEmployee = paginator.get_page(page_number)
         pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return {'employees':pageEmployee,'totalRecords': len(employees),'EmployeeForm':EmployeeForm(),'UserForm':UserForm(),'order_by':order_by}
+        return {'employees':pageEmployee,'totalRecords': len(employees),'EmployeeForm':EmployeeForm(),'UserForm':UserForm(),'order_by':order_by,'searchName':searchName}
     else:
         return redirect('/login')
 
@@ -158,12 +161,14 @@ def user_register(request):
 def get_user(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', '-id')
-        users = User.objects.all().order_by(order_by)
+        searchName = request.GET.get('search','')
+        users = User.objects.filter(Q(email__contains=searchName) | Q(username__icontains=searchName) | Q(first_name__icontains=searchName) | Q(last_name__icontains=searchName)).order_by(order_by)
+
         paginator = Paginator(users, 5)
         page_number = request.GET.get('page',1)
         pageUser = paginator.get_page(page_number)
         pageUser.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return {'users':pageUser,'totalRecords': len(users),'UserForm':UserForm(),'UserUpdateForm':UserUpdateForm(),'order_by':order_by}
+        return {'users':pageUser,'totalRecords': len(users),'UserForm':UserForm(),'UserUpdateForm':UserUpdateForm(),'order_by':order_by,'searchName':searchName}
     else:
         return redirect('/login')
 
