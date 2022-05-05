@@ -9,7 +9,6 @@
     <div class="alert alert-dismissible alert-{{ message.tags }}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <h4>{{ message }}</h4>
-        <!-- <h4>{% if  message.tags == "danger" %}Whoops .!{% else %}Success{% endif %}</h4> -->
     </div>
 {% endfor %}
 
@@ -23,14 +22,17 @@
     <div class="form-group">
         <label>Blog Category</label>
         {{formSkelton.blog_category}}
+        <p class="text-danger">{{formSkelton.blog_category.errors|striptags}}</p>
     </div>
     <div class="form-group">
       <label>Blog Title</label>
       {{formSkelton.blog_title}}
+      <p class="text-danger">{{formSkelton.blog_title.errors|striptags}}</p>
     </div>
     <div class="form-group">
       <label>Blog Description</label>
       {{formSkelton.blog_desc}}
+      <p class="text-danger">{{formSkelton.blog_desc.errors|striptags}}</p>
     </div>
     <div class="form-group col-md-12" style="padding: 0px;">
       <div class="col-md-8" style="padding: 0px;">
@@ -44,10 +46,17 @@
       {% endif %}
     </div>
     <div class="form-group">
+      <label>Blog Tags</label>
+      {{formSkelton.blog_tags}}
+      <p class="text-danger">{{formSkelton.blog_tags.errors|striptags}}</p>
+    </div>
+    <div class="form-group">
       <a href="/blog" class="btn btn-default">Cancel</a>
       <button type="reset" class="btn btn-default">Reset</button>
       <button type="submit" class="btn btn-success">{{action}} Data</button>
     </div>
 </form>
-
+<script>
+  $("#id_blog_tags").val([{%for tags in blog_tags%}'{{tags.id}}',{% endfor %}]).change();
+</script>
 {% endblock %}

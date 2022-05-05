@@ -1,5 +1,5 @@
 # from django.http import HttpResponse, HttpResponseRedirect
-from .models import Blog, Category
+from .models import Blog, Category, Tags
 from .models import Contact
 from django.contrib import messages
 from .forms import ContactForm, EditBlog
@@ -15,7 +15,10 @@ def index(request):
     if searchTitle or searchCat:
         blogs = Blog.objects.filter(blog_title__icontains=searchTitle).order_by('-blog_id')
         if searchCat:
-            blogs = Blog.objects.filter(blog_title__icontains=searchTitle,blog_category=searchCat).order_by('-blog_id')
+            blogs = Blog.objects.filter(
+                blog_title__icontains=searchTitle,
+                blog_category=searchCat
+            ).order_by('-blog_id')
     else:
         blogs = Blog.objects.all().order_by('-blog_id')
 
@@ -33,19 +36,21 @@ def index(request):
 
 def viewblog(request, id):
     blogs = Blog.objects.get(blog_id=id)
-    params = {'blogData': blogs}
+    params = {
+        'blogData': blogs,
+        'blogTags': blogs.blog_tags.all()
+    }
     return render(request, 'blog/view.html', params)
 
 def addblog(request):
-    params = {
-        'formSkelton': EditBlog(),
-        'action': "Add"
-    }
-
     if request.method=='POST':
         blog_category = request.POST['blog_category']
     
         form = EditBlog(request.POST, request.FILES)
+        params = {
+            'formSkelton': form,
+            'action': "Add"
+        }
         if form.is_valid():
             messages.success(request, 'Blog '+ request.POST['blog_title'] +' Successfully.')
             obj = form.save(commit=False)
@@ -56,26 +61,35 @@ def addblog(request):
             messages.error(request, form.errors)
             return render(request, 'blog/edit.html', params)
     else:
+        params = {'formSkelton': EditBlog(),'action': "Add"}
         return render(request, 'blog/edit.html', params)
 
 def editblog(request, id):
     if request.method=='POST':
         blog_category = request.POST['blog_category']
+        blog_tags = set(request.POST.getlist('blog_tags'))
         blog_title = request.POST['blog_title']
         blog_desc = request.POST['blog_desc']
+        blog = Blog.objects.get(blog_id=id)
         if request.FILES:
             blog_img = request.FILES['blog_img']
-
-        blog = Blog.objects.get(blog_id=id)
+            
+        # ---------------Method - 1 {For save form data}---------------
+        # blog = Blog.objects.filter(blog_id=id, blog_category=blog_category, blog_title = blog_title, blog_desc = blog_desc)
+        # blog.save()
+        
+        # ---------------Method - 2 {For save form data}---------------
         blog.blog_category=Category.objects.get(id=blog_category)
+        tagsData = Tags.objects.filter(pk__in=blog_tags)
+        blog.blog_tags.clear()
+        for tagInstance in tagsData:
+            blog.blog_tags.add(tagInstance)
+
         blog.blog_title = blog_title
         blog.blog_desc = blog_desc
         if request.FILES:
             blog.blog_img = blog_img
         blog.save()
-
-        # blog = Blog.objects.filter(blog_id=id, blog_category=blog_category, blog_title = blog_title, blog_desc = blog_desc)
-        # blog.save()
         messages.success(request, 'Blog Updated Successfully.')
         return redirect('/blog')
     else:
@@ -83,6 +97,7 @@ def editblog(request, id):
         params = {
                 'blogData': blogs,
                 'action': "Edit",
+                'blog_tags': blogs.blog_tags.values('id'),
                 'formSkelton': EditBlog({
                         'blog_category': blogs.blog_category,
                         'blog_title': blogs.blog_title,
