@@ -15,7 +15,7 @@ class EmployeeTeam(models.Model):
         default = '1'
     )
     class Meta:
-        db_table = "employee_groups"
+        db_table = "employee_teams"
 
     def __str__(self):
         return self.name
