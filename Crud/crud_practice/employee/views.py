@@ -106,7 +106,6 @@ def user_delete(request, str):
         idList.sort(reverse=True)
         lastAdminDelete = 0
         for id in idList:
-            superuser = User.objects.filter(is_superuser=True)
             user = User.objects.get(id=id)
             if user.id != request.user.id:
                 user.delete()
@@ -136,25 +135,29 @@ def is_authenticated(request):
 
 def user_register(request):
     if is_authenticated(request):
-        if request.method == "POST":
-            form = UserForm(request.POST,request.FILES)
-            if form.is_valid():
-                try:
-                    form.save()
-                    subject = 'Biztech: Welcome to Employee Management System'
-                    message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL)
-                    send_mail(subject,message,'emp@int.biztechcs.com',[request.POST['email']],fail_silently=False)
-                    messages.success(request,'User Added Successfully!')
-                    return redirect('/employee/users')
-                except:
+        if request.user.is_superuser:
+            if request.method == "POST":
+                form = UserForm(request.POST,request.FILES)
+                if form.is_valid():
+                    try:
+                        form.save()
+                        subject = 'Biztech: Welcome to Employee Management System'
+                        message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL)
+                        send_mail(subject,message,'emp@int.biztechcs.com',[request.POST['email']],fail_silently=False)
+                        messages.success(request,'User Added Successfully!')
+                        return redirect('/employee/users')
+                    except:
+                        messages.error(request,form.errors)
+                        return redirect('/employee/users')
+                else:
                     messages.error(request,form.errors)
                     return redirect('/employee/users')
             else:
-                messages.error(request,form.errors)
-                return redirect('/employee/users')
+                users = get_user(request)
+                return render(request,"users.html",users)
         else:
-            users = get_user(request)
-            return render(request,"users.html",users)
+            messages.info(request,'Permission Denied. Please Contact your administrator')
+            return redirect('/login')
     else:
         return redirect('/login')
 
@@ -184,8 +187,11 @@ def edit_user(request, id):
             form = UserUpdateForm(request.POST,instance = user)
             if form.is_valid():
                 try:
-                    form.save()
-                    messages.success(request,'User Updated Successfully!')
+                    if id == request.user.id and (not request.POST.get('is_superuser',False) or not request.POST.get('is_active',False)):
+                        messages.info(request, 'Cannot update role or status cause you\'re logged in with this user')
+                    else:
+                        form.save()
+                        messages.success(request,'User Updated Successfully!')
                     return redirect('/employee/users')
                 except:
                     messages.error(request,'Something Went Wrong!')
