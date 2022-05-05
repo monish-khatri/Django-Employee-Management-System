@@ -105,7 +105,7 @@ def user_delete(request, str):
         for id in idList:
             superuser = User.objects.filter(is_superuser=True)
             user = User.objects.get(id=id)
-            if (len(superuser)>1 and user.is_superuser) or not user.is_superuser:
+            if user.id != request.user.id:
                 user.delete()
             else:
                 lastUserName = user.get_full_name()
@@ -113,10 +113,10 @@ def user_delete(request, str):
                 continue
 
         if lastAdminDelete !=0 and len(idList)>1:
-            messages.info(request,"Cannot delete \"{}\" because it's the last user with Admin rights".format(lastUserName))
+            messages.info(request,"Cannot delete \"{}\" because it's the logged in user".format(lastUserName))
             messages.success(request,'Users Deleted Successfully!')
         elif len(idList) == 1 and lastAdminDelete !=0:
-            messages.info(request,"Cannot delete \"{}\" because it's the last user with Admin rights".format(lastUserName))
+            messages.info(request,"Cannot delete \"{}\" because it's the logged in user".format(lastUserName))
         else:
             messages.success(request,'Users Deleted Successfully!')
         return redirect('/employee/users')
