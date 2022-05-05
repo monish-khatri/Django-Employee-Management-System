@@ -1,6 +1,7 @@
 # from django.http import HttpResponse, HttpResponseRedirect
 from .models import Blog, Category, Tags
 from .models import Contact
+from django.db.models import Q
 from django.contrib import messages
 from .forms import ContactForm, EditBlog
 from django.core.paginator import Paginator
@@ -8,12 +9,12 @@ from django.shortcuts import render, redirect
 
 def index(request):
     page_number = request.GET.get('page')
-    searchTitle = request.GET.get('searchTitle')
+    searchTitle = request.GET.get('searchTitle', '')
     searchCat = request.GET.get('searchCat', '')
     catData = Category.objects.all().order_by('-id')
 
     if searchTitle or searchCat:
-        blogs = Blog.objects.filter(blog_title__icontains=searchTitle).order_by('-blog_id')
+        blogs = Blog.objects.filter(blog_title__icontains=searchTitle)
         if searchCat:
             blogs = Blog.objects.filter(
                 blog_title__icontains=searchTitle,
@@ -72,6 +73,7 @@ def editblog(request, id):
         blog_tags = set(request.POST.getlist('blog_tags'))
         blog_title = request.POST['blog_title']
         blog_desc = request.POST['blog_desc']
+        is_published = request.POST['is_published']
         blog = Blog.objects.get(blog_id=id)
         if request.FILES:
             blog_img = request.FILES['blog_img']
@@ -89,6 +91,7 @@ def editblog(request, id):
 
         blog.blog_title = blog_title
         blog.blog_desc = blog_desc
+        blog.is_published = is_published
         if request.FILES:
             blog.blog_img = blog_img
         blog.save()
@@ -104,6 +107,7 @@ def editblog(request, id):
                         'blog_category': blogs.blog_category,
                         'blog_title': blogs.blog_title,
                         'blog_desc': blogs.blog_desc,
+                        'is_published': blogs.is_published
                     })
             }
         return render(request, 'blog/edit.html', params)

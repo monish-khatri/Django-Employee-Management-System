@@ -29,8 +29,7 @@ class Blog(models.Model):
     blog_desc = models.TextField()
     blog_img = models.ImageField(upload_to="blog/images", default='untitled.png')
     blog_tags = models.ManyToManyField(Tags)
-    is_published = models.CharField(max_length=3, default='No')
-    allow_to_add_comment = models.IntegerField(default='1')
+    is_published = models.IntegerField(default='0')
     created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

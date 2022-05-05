@@ -5,12 +5,12 @@
   
 </style>
 
-{% for message in messages %}
+<!-- {% for message in messages %}
     <div class="alert alert-dismissible alert-{{ message.tags }}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <h4>{{ message }}</h4>
     </div>
-{% endfor %}
+{% endfor %} -->
 
 <h4>{{action}} Blog</h4><hr>
 {% if action == "Add" %}
@@ -51,9 +51,14 @@
       <p class="text-danger">{{formSkelton.blog_tags.errors|striptags}}</p>
     </div>
     <div class="form-group">
+      <label>Is Published ?</label>
+      {{formSkelton.is_published}}
+      <p class="text-danger">{{formSkelton.is_published.errors|striptags}}</p>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-success">{{action}} Data</button>
       <a href="/blog" class="btn btn-default">Cancel</a>
       <button type="reset" class="btn btn-default">Reset</button>
-      <button type="submit" class="btn btn-success">{{action}} Data</button>
     </div>
 </form>
 <script>
