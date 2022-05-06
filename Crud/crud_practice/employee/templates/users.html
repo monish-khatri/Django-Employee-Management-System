@@ -102,21 +102,21 @@
 					<ul class="pagination">
 						{% if users.has_previous or users.has_next %}
 							{% if users.has_previous %}
-							<li class="page-item"><a href="?page=1&order_by={{order_by}}">First</a></li>
-								<li class="page-item"><a href="?page={{ users.previous_page_number }}&order_by={{order_by}}">Previous</a></li>
+							<li class="page-item"><a href="?page=1&order_by={{order_by}}&search={{searchName}}">First</a></li>
+								<li class="page-item"><a href="?page={{ users.previous_page_number }}&order_by={{order_by}}&search={{searchName}}">Previous</a></li>
 							{% endif %}
 							{% for page in users.adjusted_elided_pages %}
 								{% if users.number == page %}
-									<li class="page-item active"><a href="?page={{page}}&order_by={{order_by}}" class="page-link">{{page}}</a></li>
+									<li class="page-item active"><a href="?page={{page}}&order_by={{order_by}}&search={{searchName}}" class="page-link">{{page}}</a></li>
 								{% elif page == users.paginator.ELLIPSIS %}
 									<li class="page-item"><a class="page-link">{{page}}</a></li>
 								{% else %}
-									<li class="page-item"><a href="?page={{page}}&order_by={{order_by}}" class="page-link">{{page}}</a></li>
+									<li class="page-item"><a href="?page={{page}}&order_by={{order_by}}&search={{searchName}}" class="page-link">{{page}}</a></li>
 								{% endif %}
 							{% endfor %}
 							{% if users.has_next %}
-								<li class="page-item"><a href="?page={{ users.next_page_number }}&order_by={{order_by}}" class="page-link">Next</a></li>
-								<li class="page-item"><a href="?page={{ users.paginator.num_pages }}&order_by={{order_by}}">Last</a></li>
+								<li class="page-item"><a href="?page={{ users.next_page_number }}&order_by={{order_by}}&search={{searchName}}" class="page-link">Next</a></li>
+								<li class="page-item"><a href="?page={{ users.paginator.num_pages }}&order_by={{order_by}}&search={{searchName}}">Last</a></li>
 							{% endif %}
 						{% endif %}
 					</ul>
