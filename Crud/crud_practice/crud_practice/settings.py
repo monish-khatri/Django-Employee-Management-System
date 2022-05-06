@@ -82,7 +82,8 @@ WSGI_APPLICATION = 'crud_practice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
+        # 'NAME': 'django',
+        'NAME': 'django_crud',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',

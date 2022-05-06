@@ -17,14 +17,14 @@ def register(request):
 
         if first_name == '' or last_name == '' or username == '' or email == '' or password == '':
             messages.error(request,'All fields are required!')
-            return redirect('/register')
+            return render(request, 'register.html')
         if password == confirmPassword:
             if User.objects.filter(username=username).exists():
                 messages.error(request,'Username already taken!')
-                return redirect('/register')
+                return render(request, 'register.html')
             elif User.objects.filter(email=email).exists():
-                messages.error(request,'Email address already in use!!!')
-                return redirect('/register')
+                messages.error(request,'Email address already in use!')
+                return render(request, 'register.html')
             else:
                 user = User.objects.create_user(username=username,password=password,email=email, first_name=first_name,last_name=last_name )
                 user.save()
@@ -35,7 +35,7 @@ def register(request):
                 return redirect('/login')
         else:
             messages.error(request,'Password & Confrim Password is not same!!!')
-            return redirect('/register')
+            return render(request, 'register.html')
     else:
         return render(request, "register.html")
 
@@ -47,8 +47,11 @@ def login(request):
 
             username = request.POST.get('username','')
             password = request.POST.get('password','')
-            if username == '' or password == '':
-                messages.error(request,'Username and Password required!')
+            if username == '':
+                messages.error(request,'Please enter username!')
+                return render(request, 'login.html')
+            if password == '':
+                messages.error(request,'Please enter password!')
                 return render(request, 'login.html')
             else:
                 remember_me = request.POST.get('remember','off')
@@ -60,7 +63,7 @@ def login(request):
                     return redirect('/employee')
                 else:
                     messages.error(request,'Incorrect username or password!')
-                    return redirect('/login')
+                    return render(request, 'login.html')
         else:
             return render(request, "login.html")
 

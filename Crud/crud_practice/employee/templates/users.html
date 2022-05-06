@@ -130,4 +130,12 @@
 	{% include 'edit_user.html' %}
 	{% include 'add_user.html' %}
 	{% include 'view_user.html' %}
+	<!-- Open modal iif redirect('/user#addUserModal') in djnago view
+		<script>
+		$(document).ready(function() {
+			if(window.location.href.indexOf('#addUserModal') != -1) {
+			  $('#addUserModal').modal('show');
+			}
+		  });
+	</script> -->
 {% endblock %}

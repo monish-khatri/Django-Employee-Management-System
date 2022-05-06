@@ -24,27 +24,27 @@
       <div class="box-inputs">
 
         <div class="inputs-email">
-          <input type="text" name="first_name" id="first_name" class="input username" placeholder="First Name">
+          <input type="text" name="first_name" id="first_name" class="input username" value="{{request.POST.first_name}}" placeholder="First Name">
           <label for="first_name" class="label-inputs">First Name:</label>
         </div>
         <div class="inputs-email">
-          <input type="text" name="last_name" id="last_name" class="input username" placeholder="Last Name">
+          <input type="text" name="last_name" id="last_name" class="input username" value="{{request.POST.last_name}}" placeholder="Last Name">
           <label for="last_name" class="label-inputs">Last Name:</label>
         </div>
         <div class="inputs-email">
-          <input type="text" name="username" id="username" class="input username" placeholder="Username">
+          <input type="text" name="username" id="username" class="input username" value="{{request.POST.username}}" placeholder="Username">
           <label for="username" class="label-inputs">Username:</label>
         </div>
         <div class="inputs-email">
-          <input type="email" name="email" id="email" class="input username" placeholder="Email">
+          <input type="email" name="email" id="email" class="input username"  value="{{request.POST.email}}"  placeholder="Email">
           <label for="email" class="label-inputs">Email:</label>
         </div>
         <div class="inputs-password">
-          <input type="password" name="password1" id="password1" class="input username" placeholder="Password">
+          <input type="password" name="password1" id="password1" class="input username"  value="{{request.POST.password1}}"  placeholder="Password">
           <label for="password1" class="label-inputs">Password:</label>
         </div>
         <div class="inputs-password">
-          <input type="password" name="password2" id="password2" class="input username" placeholder="Confirm Password">
+          <input type="password" name="password2" id="password2" class="input username"  value="{{request.POST.password2}}"  placeholder="Confirm Password">
           <label for="password2" class="label-inputs">Confirm Password:</label>
         </div>
 
