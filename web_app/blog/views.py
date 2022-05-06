@@ -111,7 +111,6 @@ def addblog(request):
     if request.method=='POST':
         blog_category = request.POST['blog_category']
         blog_tags = request.POST.getlist('blog_tags',[])
-
         form = EditBlog(request.POST, request.FILES)
         params = {
             'formSkelton': form,
@@ -120,13 +119,12 @@ def addblog(request):
         if form.is_valid():
             messages.success(request, 'Blog '+ request.POST['blog_title'] +' Successfully.')
             obj = form.save(commit=False)
-            obj.blog_category = Category.objects.get(id=blog_category)
-            if len(blog_tags)>0:
-                tagsData = Tags.objects.filter(pk__in=blog_tags)
-                for tagInstance in tagsData:
-                    obj.blog_tags.add(tagInstance)
-
+            obj.blog_category = Category.objects.get(id=blog_category)            
             obj.save()
+            if len(blog_tags)>0:
+                for tags in blog_tags:
+                    obj.blog_tags.add(tags)
+            
             return redirect('/blog')
         else:
             messages.error(request, form.errors)
