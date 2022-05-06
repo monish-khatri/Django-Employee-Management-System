@@ -91,7 +91,6 @@ $(document).ready(function(){
             url: url,
 			dataType: 'json',
             success: function(data) {
-				debugger
 				var emp = data[0].fields
 				var team = data[1].fields
 				$("#view-name").val(emp.name)
@@ -190,7 +189,6 @@ $(document).ready(function(){
 		showDropdowns: true,
 		minYear: 1979,
 		maxYear: parseInt(moment().format('YYYY')),
-		startDate: "23/08/1998",
 		locale: {
 			"format": "DD/MM/YYYY",
 		}

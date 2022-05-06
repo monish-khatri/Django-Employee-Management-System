@@ -22,7 +22,7 @@ class EmployeeForm(forms.ModelForm):
     phone = forms.IntegerField(min_value=10000000,max_value=999999999999,required=True,widget=forms.NumberInput(attrs={'placeholder':'Phone Number','id':'phone'}))
     image = forms.ImageField(allow_empty_file=True,required=False,widget=forms.FileInput(attrs={'id':'image'}))
     team = forms.ModelChoiceField(queryset=EmployeeTeam.objects.filter(status='1').order_by('name'), label='Select Team', widget=forms.Select(attrs={'class': "form-control","id":"team"}), required=True)
-    date_of_birth = forms.DateField(required=True,widget=forms.DateInput(attrs={'type': 'text','id':'date_of_birth'}))
+    date_of_birth = forms.DateField(required=True,widget=forms.TextInput(attrs={'id':'date_of_birth'}))
 
 
 class UserForm(UserCreationForm):
