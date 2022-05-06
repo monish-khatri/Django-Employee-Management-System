@@ -46,9 +46,9 @@ def get(request):
         order_by = request.GET.get('order_by', '-id')
         searchName = request.GET.get('search','')
         if request.user.is_superuser:
-            employees = Employee.objects.filter(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName)).order_by(order_by)
+            employees = Employee.objects.filter(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName)| Q(team__name__icontains=searchName)| Q(user__username__icontains=searchName)).order_by(order_by)
         else:
-            employees = Employee.objects.filter(Q(user_id=request.user.id),(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName))).order_by(order_by)
+            employees = Employee.objects.filter(Q(user_id=request.user.id),(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName))| Q(team__name__icontains=searchName)).order_by(order_by)
         paginator = Paginator(employees, 5)
         page_number = request.GET.get('page',1)
         pageEmployee = paginator.get_page(page_number)
