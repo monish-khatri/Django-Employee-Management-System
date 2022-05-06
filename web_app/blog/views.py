@@ -3,9 +3,43 @@ from .models import Blog, Category, Tags
 from .models import Contact
 from django.db.models import Q
 from django.contrib import messages
+from django.contrib.auth.models import User
 from .forms import ContactForm, EditBlog
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
+
+def handleSignin(request):
+    if request.method=='POST':
+        pass
+    else:
+        pass
+
+def handleSignup(request):
+    if request.method=='POST':
+        fname = request.POST.get('fname')
+        lname = request.POST.get('lname')
+        email = request.POST.get('email')
+        pass1 = request.POST.get('pass1')
+        pass2 = request.POST.get('pass2')
+
+        if len(email)<10:
+            messages.error(request, " Your email is not valid")
+            return render(request, 'blog/register.html')
+
+        if fname.isalnum() or lname.isalnum():
+            messages.error(request, " First,Last Name Should be proper")
+            return render(request, 'blog/register.html')
+
+        if (pass1!= pass2):
+             messages.error(request, " Passwords do not match")
+             return render(request, 'blog/register.html')
+
+        myuser = User.objects.create_user(first_name=fname, last_name=lname, username=email, email=email, password=pass1)
+        myuser.save()
+        messages.success(request, "You are Registered successfully !")
+        return redirect('/blog/register')
+    else:
+        return render(request, 'blog/register.html')
 
 def index(request):
     page_number = request.GET.get('page')
