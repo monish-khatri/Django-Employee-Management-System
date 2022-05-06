@@ -40,8 +40,13 @@
             <li><a href="/blog/contact">Contact Us</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
+            {% if not user.is_authenticated %}
             <li><a href="/blog/login">Login</a></li>
             <li><a href="/blog/register">Register</a></li>
+            {% else %}
+            <li><a href="#">Welcome {{user.get_full_name}}</a></li>
+            <li><a href="/blog/logout">Logout</a></li>
+            {% endif %}
           </ul>
         </div>
       </div>

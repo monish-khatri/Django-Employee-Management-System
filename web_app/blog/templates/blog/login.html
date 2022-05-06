@@ -3,6 +3,12 @@
 {% block body %}
 <h3>Login Now</h3>
 <hr>
+{% for message in messages %}
+    <div class="alert alert-dismissible alert-{{ message.tags }}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <p>{{ message }}</p>
+    </div>
+{% endfor %}
 <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Please Authenticate to Add/Edit Blogs</h3>
@@ -14,21 +20,22 @@
             <div class="form-group">
                 <label class="col-lg-2 control-label text-right">Username</label>
                 <div class="col-lg-6">
-                    <input type="text" name="username" required class="form-control" placeholder="Please Enter Username">
+                    <input type="email" name="username" required class="form-control" placeholder="Please Enter Username">
                 </div>
             </div>
             <div class="clearfix"></div><br>
             <div class="form-group">
                 <label class="col-lg-2 control-label text-right">Password</label>
                 <div class="col-lg-6">
-                    <input type="text" name="password" required class="form-control" placeholder="Please Enter Password">
+                    <input type="password" name="password" required class="form-control" placeholder="Please Enter Password">
                 </div>
             </div>
             <div class="clearfix"></div><br>
             <div class="form-group" align="center">
-                <div class="col-lg-8">
+                <div class="col-lg-10">
                     <button class="btn btn-success">Login</button>
                     <button type="reset" class="btn btn-default">Reset</button>
+                    <a href="/blog/register" class="btn btn-link">Not Have an account ?</a>
                 </div>
             </div>
         </form>

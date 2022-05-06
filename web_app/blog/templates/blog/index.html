@@ -56,10 +56,13 @@
                     <p>{{i.blog_desc|truncatechars:300|striptags}}</p>
                 </td>
                 <td style="width: 12%;">
-                    <a title="View Blog" class="btn btn-sm btn-info" href="/blog/view/{{i.blog_id}}"><i class="fa fa-eye"></i></a>
-                    <a title="Edit Blog" class="btn btn-sm btn-warning" href="/blog/edit/{{i.blog_id}}"><i class="fa fa-pencil-square-o"></i></a>
+                    {% if user.is_authenticated %}
+                    <a title="Edit Blog" class="btn btn-sm btn-warning" href="/blog/edit/{{i.blog_id}}"><i class="fa fa-pencil-square-o"></i> Edit</a>
                     <a class="remove_blog_{{i.blog_id}}" style="display: none;" href="/blog/remove/{{i.blog_id}}"></a>
                     <a title="Delete Blog" data-id="{{i.blog_id}}" class="btn btn-sm btn-danger removeBlog"><i class="fa fa-trash"></i></a>
+                    {% else %}
+                    <a title="View Blog" class="btn btn-block btn-link" href="/blog/view/{{i.blog_id}}"><i class="fa fa-eye"></i> View</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

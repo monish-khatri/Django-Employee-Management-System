@@ -11,4 +11,5 @@ urlpatterns = [
     path('contact', views.contact, name='BlogContact'),
     path('login', views.handleSignin, name='BlogLogin'),
     path('register', views.handleSignup, name='BlogRegister'),
+    path('logout', views.handleLogout, name='BlogLogout'),
 ]
