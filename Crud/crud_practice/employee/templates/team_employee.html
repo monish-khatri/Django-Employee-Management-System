@@ -28,13 +28,10 @@
 			<div class="table-title">
 				<div class="row">
 					<div class="col-sm-6">
-						<h2>Manage <b>Employees</b></h2>
+						<h2><b>{{team.name}}</b> Members</h2>
 					</div>
 					<div class="col-sm-6">
-						<a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add Employee</span></a>
-					{% if employees %}
-						<a data-form="/employee/delete/" class="btn btn-danger delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
-					{% endif %}
+						<a href="{{previousUrl}}" class="btn btn-danger"><i class="fa fa-arrow-left" aria-hidden="true"></i><span>Back</span></a>
 					</div>
 				</div>
 			</div>
@@ -47,59 +44,25 @@
 			<table class="table table-striped table-hover">
 				<thead>
 					<tr>
-						<th>
-							{% if employees %}
-								<span class="custom-checkbox">
-									<input type="checkbox" id="selectAll">
-									<label for="selectAll"></label>
-								</span>
-							{% endif %}
-						</th>
-						<th>Sr.No.</th>
-						<th>Image</th>
+						<th></th>
+						<th >Sr.No.</th>
 						<th class="{% url_replace request 'order_by' 'name' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'name' '-' %}">Name</a></th>
-						<th class="{% url_replace request 'order_by' 'email' '-' 'True' %} header-class" ><a href="?{% url_replace request 'order_by' 'email' '-' %}">Email</a></th>
-						<th class="{% url_replace request 'order_by' 'phone' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'phone' '-' %}">Phone</a></th>
-						{% if user.is_superuser %}
-						<th class="{% url_replace request 'order_by' 'user__username' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'user__username' '-' %}">Reporter</a></th>
-						{% endif %}
-						<th class="{% url_replace request 'order_by' 'team__name' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'team__name' '-' %}">Team</a></th>
-						<th>Actions</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 		{% if employees %}
 			{% for emp in employees %}
 			<tr>
-				<td>
-					<span class="custom-checkbox">
-						<input type="checkbox" id="checkbox{{emp.id}}" name="options[]" value="{{emp.id}}">
-						<label for="checkbox{{emp.id}}"></label>
-					</span>
-				</td>
-				<td>{{ forloop.counter0|add:employees.start_index}}</td>
-				<td><img src="{{emp.image.url}}" class="image-size" alt="Image"></td>
-				<td>{{emp.name}}</td>
-				<td>{{emp.email}}</td>
-				<td>{{emp.phone}}</td>
-				{% if user.is_superuser %}
-				<td>{{emp.user|capfirst}}</td>
-				{% endif %}
-				<td><a href="/employee/team/{{emp.team.id}}">{{emp.team}}</a></td>
-				<td>
-				<a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="view employee-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
-				<a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="edit employee-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-				<a href="#deleteModal" data-form="/employee/delete/{{emp.id}}" class="delete delete-single" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-				</td>
+				<td></td>
+				<td >{{ forloop.counter0|add:employees.start_index}}</td>
+				<td >{{emp.name}}</td>
+				<td></td>
 			</tr>
 			{% endfor %}
 		{% else %}
 		<tr align="center">
-			{% if user.is_superuser %}
-				<td colspan="9">
-			{% else %}
-				<td colspan="8">
-			{% endif %}
+			<td colspan="2">
 			No records Found!
 			</td>
 		</tr>

@@ -71,7 +71,7 @@
 				</span>
 			</td>
 			<td>{{ forloop.counter0|add:teams.start_index}}</td>
-			<td>{%if team.name != ''%}{{team.name|capfirst}}{% else %} N/A {%endif%}</td>
+			<td><a href="/employee/team/{{team.id}}">{%if team.name != ''%}{{team.name|capfirst}}{% else %} N/A {%endif%}</a></td>
 			<td>{% if team.status == '1' %}<i class="material-icons verified check_circle" data-toggle="tooltip" title="Active"></i>{% else %}<i class="material-icons cancel dangerous" data-toggle="tooltip" title="In-active"></i>{%endif%}</td>
 			{% if user.is_superuser %}
 				<td>

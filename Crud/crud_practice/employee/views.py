@@ -274,3 +274,18 @@ def team_edit(request, id):
                 return render(request,"teams.html",teams)
     else:
         return redirect('/login')
+
+def team_employee(request,id):
+    if is_authenticated(request):
+        previousUrl = request.META.get('HTTP_REFERER')
+        order_by = request.GET.get('order_by', '-id')
+        searchName = request.GET.get('search','')
+        teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName)).order_by(order_by)
+        team = EmployeeTeam.objects.get(id=id)
+        paginator = Paginator(teamEmployee, 5)
+        page_number = request.GET.get('page',1)
+        pageEmployee = paginator.get_page(page_number)
+        pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+        return render(request,"team_employee.html",{'previousUrl':previousUrl,'team':team,'employees':pageEmployee,'totalRecords': len(teamEmployee),'order_by':order_by,'searchName':searchName})
+    else:
+        return redirect('/login')
