@@ -26,7 +26,7 @@ def handleSignin(request):
             user = auth.authenticate(username=username, password=password)
             if user is not None:
                 auth.login(request, user)
-                return redirect('/blog/')
+                return redirect('/blog/myblogs')
             else:
                 messages.error(request,'Incorrect username or password!')
                 return render(request, 'blog/login.html')
@@ -79,7 +79,7 @@ def index(request):
                 is_published=1
             ).order_by('-blog_id')
     else:
-        blogs = Blog.objects.all().order_by('-blog_id')
+        blogs = Blog.objects.filter(is_published=1).order_by('-blog_id')
 
     paginator = Paginator(blogs, 10)
     page_obj = paginator.get_page(page_number)
@@ -92,6 +92,40 @@ def index(request):
         'searchCat':searchCat,
     }
     return render(request, 'blog/index.html', params)
+
+def myindex(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "Please Login to Add/Update blog")
+        return redirect('/blog/login')
+        
+    page_number = request.GET.get('page')
+    searchTitle = request.GET.get('searchTitle', '')
+    searchCat = request.GET.get('searchCat', '')
+    catData = Category.objects.all().order_by('-id')
+
+    if searchTitle or searchCat:
+        blogs = Blog.objects.filter(blog_title__icontains=searchTitle, is_published=1, user_id=request.user.id,)
+        if searchCat:
+            blogs = Blog.objects.filter(
+                blog_title__icontains=searchTitle,
+                blog_category=searchCat,
+                is_published=1,
+                user_id=request.user.id,
+            ).order_by('-blog_id')
+    else:
+        blogs = Blog.objects.filter(user_id=request.user.id,).order_by('-blog_id')
+
+    paginator = Paginator(blogs, 10)
+    page_obj = paginator.get_page(page_number)
+    params = {
+        'blogData': page_obj,
+        'countCurrent': len(page_obj),
+        'count':len(blogs),
+        'catData':catData,
+        'searchTitle':searchTitle,
+        'searchCat':searchCat,
+    }
+    return render(request, 'blog/my-index.html', params)
 
 def viewblog(request, id):
     blogs = Blog.objects.get(blog_id=id)
@@ -119,13 +153,14 @@ def addblog(request):
         if form.is_valid():
             messages.success(request, 'Blog '+ request.POST['blog_title'] +' Successfully.')
             obj = form.save(commit=False)
-            obj.blog_category = Category.objects.get(id=blog_category)            
+            obj.user_id = User.objects.get(id=request.user.id)
+            obj.blog_category = Category.objects.get(id=blog_category)
             obj.save()
             if len(blog_tags)>0:
                 for tags in blog_tags:
                     obj.blog_tags.add(tags)
             
-            return redirect('/blog')
+            return redirect('/blog/myblogs')
         else:
             messages.error(request, form.errors)
             return render(request, 'blog/edit.html', params)
@@ -134,9 +169,13 @@ def addblog(request):
         return render(request, 'blog/edit.html', params)
 
 def editblog(request, id):
+    blogs = Blog.objects.get(blog_id=id)
     if not request.user.is_authenticated:
         messages.error(request, "Please Login to Add/Update blog")
         return redirect('/blog/login')
+    if request.user.id != blogs.user_id.id:
+        messages.error(request, "Authorization failed. You cannot edit someone else's blog")
+        return redirect('/blog/')
 
     if request.method=='POST':
         blog_category = request.POST['blog_category']
@@ -166,9 +205,9 @@ def editblog(request, id):
             blog.blog_img = blog_img
         blog.save()
         messages.success(request, 'Blog Updated Successfully.')
-        return redirect('/blog')
+        return redirect('/blog/myblogs')
     else:
-        blogs = Blog.objects.get(blog_id=id)
+        
         params = {
                 'blogData': blogs,
                 'action': "Edit",
@@ -184,9 +223,16 @@ def editblog(request, id):
 
 def removeblog(request, id):
     blogs = Blog.objects.get(blog_id=id)
+    if not request.user.is_authenticated:
+        messages.error(request, "Please Login to Add/Update blog")
+        return redirect('/blog/login')
+    if request.user.id != blogs.user_id.id:
+        messages.error(request, "Authorization failed. You cannot edit someone else's blog")
+        return redirect('/blog/')
+
     blogs.delete()
-    messages.error(request, 'Blog Removed Successfully.')
-    return redirect('/blog')
+    messages.success(request, 'Blog Removed Successfully.')
+    return redirect('/blog/myblogs')
 
 def contact(request):
     params = {"contactForm": ContactForm}

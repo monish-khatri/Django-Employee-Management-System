@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -23,7 +24,7 @@ class Tags(models.Model):
 
 class Blog(models.Model):
     blog_id = models.BigAutoField(primary_key=True)
-    user_id = models.IntegerField(default='1')
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     blog_category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     blog_title = models.CharField(max_length=250)
     blog_desc = models.TextField()

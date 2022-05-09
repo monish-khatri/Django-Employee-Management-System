@@ -1,8 +1,9 @@
 $(document).ready(function(){
   
     $( document ).tooltip();
-
-    $('#blogIndex').DataTable({
+    
+    
+    $('#myblogIndex').DataTable({
       "searching": false,
       "paging": false,
       "aoColumns":[
@@ -11,6 +12,16 @@ $(document).ready(function(){
           {"bSortable": true},
           {"bSortable": true},
           {"bSortable": false}
+      ]
+    });
+    $('#blogIndex').DataTable({
+      "searching": false,
+      "paging": false,
+      "aoColumns":[
+          {"bSortable": false},
+          {"bSortable": false},
+          {"bSortable": true},
+          {"bSortable": true}
       ]
     });
     $( "#accordion" ).accordion({

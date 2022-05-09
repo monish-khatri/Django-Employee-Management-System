@@ -147,3 +147,6 @@ label{
   font-weight: normal;
   color: #eeeeee;
 }
+.not-published{
+  background: #bebebe80;
+}
