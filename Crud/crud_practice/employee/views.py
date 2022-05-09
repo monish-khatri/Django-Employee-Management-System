@@ -280,7 +280,7 @@ def team_employee(request,id):
         previousUrl = request.META.get('HTTP_REFERER')
         order_by = request.GET.get('order_by', '-id')
         searchName = request.GET.get('search','')
-        teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName)).order_by(order_by)
+        teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
         team = EmployeeTeam.objects.get(id=id)
         paginator = Paginator(teamEmployee, 5)
         page_number = request.GET.get('page',1)
