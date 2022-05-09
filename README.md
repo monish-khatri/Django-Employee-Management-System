@@ -1,26 +1,26 @@
 # Django: Employee Management System
-# Go to Directory
+## Go to Directory
 1) cd CRUD/
 
-# Create virtual environment for django project
+## Create virtual environment for django project
 1) pip3 install virtualenv
 2) virtualenv env
 3) source env/bin/activate
 
-# Django installation steps
+## Django installation steps
 1) pip3 install django==3.2.13
 
-# To create file for dependency.
+## To create file for dependency.
 1) pip3 freeze > requirements.txt
 
-# To install all dependency
+## To install all dependency
 1) pip install -r requirements.txt
 
-# Migration Steps
+## Migration Steps
 3) python manage.py makemigrations
 4) python manage.py migrate
 
-# Run Project
+## Run Project
 1) python manage.py runserver
 OR 
 2) python manage.py runserver <ip_address>:<port_number>
