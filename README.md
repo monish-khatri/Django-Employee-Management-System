@@ -1,4 +1,4 @@
-# Django-Employee-Management-System
+# Django: Employee Management System
 
 # Create virtual environment for django project
 1) pip3 install virtualenv
