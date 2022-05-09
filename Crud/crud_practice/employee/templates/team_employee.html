@@ -36,7 +36,8 @@
 				</div>
 			</div>
 			<nav class="navbar search-btn">
-				<form class="form-inline" action="" method="get">
+				<form class="form-inline" action="" method="post">
+					{% csrf_token %}
 				  <input class="form-control mr-sm-2" id="searchName" type="search" name="search" placeholder="Search" aria-label="Search" value='{{searchName}}'>
 				  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 				</form>

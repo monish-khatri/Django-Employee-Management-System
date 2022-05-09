@@ -23,7 +23,7 @@ class EmployeeTeam(models.Model):
 
 class Employee(models.Model):
     name = models.CharField(max_length=50,default='No Name')
-    email = models.EmailField()
+    email = models.EmailField(db_index=True)
     phone = models.CharField(max_length=12)
     image = models.ImageField(upload_to='employee/',default='employee/NoImage.png',blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -277,9 +277,13 @@ def team_edit(request, id):
 
 def team_employee(request,id):
     if is_authenticated(request):
-        previousUrl = request.META.get('HTTP_REFERER')
-        order_by = request.GET.get('order_by', '-id')
-        searchName = request.GET.get('search','')
+        if request.method == 'GET':
+            request.session['previousUrl'] = request.META.get('HTTP_REFERER')
+            previousUrl = request.session.get('previousUrl')
+        else:
+            previousUrl = request.session.get('previousUrl')
+        order_by = request.POST.get('order_by', '-id')
+        searchName = request.POST.get('search','')
         teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
         team = EmployeeTeam.objects.get(id=id)
         paginator = Paginator(teamEmployee, 5)
