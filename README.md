@@ -1,9 +1,9 @@
 # Django-Employee-Management-System
 
 # Create virtual environment for django project
-1)pip3 install virtualenv
-2)virtualenv env
-3)source env/bin/activate
+1) pip3 install virtualenv
+2) virtualenv env
+3) source env/bin/activate
 
 # Django installation steps
 1) pip3 install django==3.2.13
@@ -19,7 +19,7 @@
 4) python manage.py migrate
 
 # Run Project
-1)python manage.py runserver
+1) python manage.py runserver
 OR 
 2) python manage.py runserver <ip_address>:<port_number>
   - e.g: python manage.py runserver 192.168.1.120:8000   
