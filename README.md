@@ -1,4 +1,6 @@
 # Django: Employee Management System
+# Go to Directory
+1) cd CRUD/
 
 # Create virtual environment for django project
 1) pip3 install virtualenv
