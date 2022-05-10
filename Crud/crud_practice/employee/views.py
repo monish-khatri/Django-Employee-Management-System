@@ -108,7 +108,7 @@ def delete(request, str):
     else:
         return redirect('/login')
 
-def user_delete(request, str):
+def delete_admin(request, str):
     if is_authenticated(request):
         str = str.rstrip(',')
         idList = [int(x) for x in str.split(',')]
