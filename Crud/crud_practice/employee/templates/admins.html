@@ -30,7 +30,7 @@
 				<div class="col-sm-6">
 					<a href="#addUserModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add User</span></a>
 				{% if users %}
-					<a data-form="/employee/user_delete/" class="btn btn-danger delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
+					<a data-form="/employee/delete_admin/" class="btn btn-danger delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
 				{% endif %}
 				</div>
 			</div>
@@ -82,7 +82,7 @@
 			<td>
 			  <a data-form="/employee/edit_admin/{{user.id}}" data-id="{{user.id}}" class="view user-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
 			  <a data-form="/employee/edit_admin/{{user.id}}" data-id="{{user.id}}" class="edit user-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-			  <a href="#deleteModal" data-form="/employee/user_delete/{{user.id}}" class="delete delete-single" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+			  <a href="#deleteModal" data-form="/employee/delete_admin/{{user.id}}" class="delete delete-single" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 			</td>
 		  </tr>
 		{% endfor %}
