@@ -23,7 +23,7 @@
 1) python manage.py makemigrations
 2) python manage.py migrate
 
-## copy static files to assest folder
+## Copy static files to assest folder
 1) python manage.py collectstatic
 
 ## Run Project
