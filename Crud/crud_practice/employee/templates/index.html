@@ -85,7 +85,7 @@
 				{% if user.is_superuser %}
 				<td>{{emp.user|capfirst}}</td>
 				{% endif %}
-				<td><a href="/employee/team/{{emp.team.id}}">{{emp.team}}</a></td>
+				<td>{%if emp.team is not None%}<a href="/employee/team/{{emp.team.id}}">{{emp.team}}</a>{% else %} N/A {%endif%}</td>
 				<td>
 				<a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="view employee-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
 				<a data-form="/employee/edit/{{emp.id}}" data-id="{{emp.id}}" class="edit employee-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
