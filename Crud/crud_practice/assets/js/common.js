@@ -1,6 +1,12 @@
 $(document).ready(function(){
 	$('.delete-multiple').hide()
-
+	let pageName = location.pathname;
+	let currentLink = $('.navbar-nav .nav-item a[href="' + pageName + '"]');
+	if (currentLink) {
+	
+		$('.navbar-nav .nav-item').removeClass('active');
+		currentLink.parent().addClass('active');
+	}
 	// Select/Deselect checkboxes
 	var checkbox = $('table tbody input[type="checkbox"]');
 	$("#selectAll").click(function(){
@@ -55,7 +61,7 @@ $(document).ready(function(){
 				$("#name").val(emp.name)
 				$("#email").val(emp.email)
 				$("#phone").val(emp.phone)
-				$("#group").val(emp.group)
+				$("#team").val(emp.team)
 				$("#edit-image").attr('src','/media/'+emp.image)
 				var dob = emp.date_of_birth.split("-")
 				$('#date_of_birth').data('daterangepicker').setStartDate(dob[1]+'/'+dob[2]+'/'+dob[0]);
@@ -92,13 +98,13 @@ $(document).ready(function(){
 			dataType: 'json',
             success: function(data) {
 				var emp = data[0].fields
-				var grp = data[1].fields
+				var team = data[1].fields
 				$("#view-name").val(emp.name)
 				$("#view-email").val(emp.email)
 				$("#view-phone").val(emp.phone)
 				finalDate = DateFormatter(emp.date_of_birth)
 				$("#view-date_of_birth").val(finalDate)
-				$("#view-group").val(grp.name)
+				$("#view-team").val(team.name)
 				$("#view-image").attr('src','/media/'+emp.image)
 				$('#viewEmployeeModal').modal('show')
             }
@@ -189,7 +195,6 @@ $(document).ready(function(){
 		showDropdowns: true,
 		minYear: 1979,
 		maxYear: parseInt(moment().format('YYYY')),
-		startDate: "23/08/1998",
 		locale: {
 			"format": "DD/MM/YYYY",
 		}

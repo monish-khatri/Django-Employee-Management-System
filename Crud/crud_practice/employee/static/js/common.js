@@ -1,6 +1,12 @@
 $(document).ready(function(){
 	$('.delete-multiple').hide()
-
+	let pageName = location.pathname;
+	let currentLink = $('.navbar-nav .nav-item a[href="' + pageName + '"]');
+	if (currentLink) {
+	
+		$('.navbar-nav .nav-item').removeClass('active');
+		currentLink.parent().addClass('active');
+	}
 	// Select/Deselect checkboxes
 	var checkbox = $('table tbody input[type="checkbox"]');
 	$("#selectAll").click(function(){
