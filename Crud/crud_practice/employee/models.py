@@ -25,7 +25,7 @@ class Employee(models.Model):
     name = models.CharField(max_length=50,default='No Name')
     email = models.EmailField(db_index=True)
     phone = models.CharField(max_length=12)
-    image = models.ImageField(upload_to='employee/',default='employee/NoImage.png',blank=True)
+    image = models.ImageField(upload_to='employee/',default='NoImage.png',blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
