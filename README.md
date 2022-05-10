@@ -16,9 +16,15 @@
 ## To install all dependency
 1) pip install -r requirements.txt
 
+## Go to Directory
+1) cd crud_practice/
+
 ## Migration Steps
-3) python manage.py makemigrations
-4) python manage.py migrate
+1) python manage.py makemigrations
+2) python manage.py migrate
+
+## copy static files to assest folder
+1) python manage.py collectstatic
 
 ## Run Project
 1) python manage.py runserver
