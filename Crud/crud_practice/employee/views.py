@@ -62,9 +62,13 @@ def edit(request, id):
     if is_authenticated(request):
         if request.method == "GET":
             employee = Employee.objects.get(id=id)
-            team = EmployeeTeam.objects.get(name=employee.team)
-            # Convert modal instance to json format
-            jsonObject = serializers.serialize('json', [ employee , team])
+            if employee.team is not None:
+                team = EmployeeTeam.objects.get(name=employee.team)
+                # Convert modal instance to json format
+                jsonObject = serializers.serialize('json', [ employee , team])
+            else:
+                jsonObject = serializers.serialize('json', [ employee])
+
             return HttpResponse(jsonObject)
         else:
             employee = Employee.objects.get(id=id)
