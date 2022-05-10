@@ -130,7 +130,7 @@ def user_delete(request, str):
             messages.info(request,"Cannot delete \"{}\" because it's the logged in user".format(lastUserName))
         else:
             messages.success(request,'Users Deleted Successfully!')
-        return redirect('/employee/users')
+        return redirect('/employee/admins')
     else:
         return redirect('/login')
 
@@ -154,16 +154,16 @@ def user_register(request):
                         message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL)
                         send_mail(subject,message,'emp@int.biztechcs.com',[request.POST['email']],fail_silently=False)
                         messages.success(request,'User Added Successfully!')
-                        return redirect('/employee/users')
+                        return redirect('/employee/admins')
                     except:
                         messages.error(request,form.errors)
-                        return redirect('/employee/users')
+                        return redirect('/employee/admins')
                 else:
                     messages.error(request,form.errors)
-                    return redirect('/employee/users')
+                    return redirect('/employee/admins')
             else:
                 users = get_user(request)
-                return render(request,"users.html",users)
+                return render(request,"admins.html",users)
         else:
             messages.info(request,'Permission Denied. Please Contact your administrator')
             return redirect('/login')
@@ -184,7 +184,7 @@ def get_user(request):
     else:
         return redirect('/login')
 
-def edit_user(request, id):
+def edit_admin(request, id):
     if is_authenticated(request):
         if request.method == "GET":
             user = User.objects.get(id=id)
@@ -201,13 +201,13 @@ def edit_user(request, id):
                     else:
                         form.save()
                         messages.success(request,'User Updated Successfully!')
-                    return redirect('/employee/users')
+                    return redirect('/employee/admins')
                 except:
                     messages.error(request,'Something Went Wrong!')
-                    return redirect('/employee/users')
+                    return redirect('/employee/admins')
             else:
                 users = get_user(request)
-                return render(request,"users.html",users)
+                return render(request,"admins.html",users)
     else:
         return redirect('/login')
 

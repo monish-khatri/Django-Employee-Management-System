@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jnncpla$f4-j5n0%&p(#3llwz0u=v6%#r*2^%+h#kbz!p!iy7%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = [
    '*'
 ]
@@ -84,8 +84,8 @@ WSGI_APPLICATION = 'crud_practice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
-        # 'NAME': 'django_crud',
+        # 'NAME': 'django',
+        'NAME': 'django_crud',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
