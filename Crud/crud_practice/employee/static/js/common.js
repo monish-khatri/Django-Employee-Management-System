@@ -143,7 +143,7 @@ $(document).ready(function(){
             url: url,
 			dataType: 'json',
             success: function(data) {
-				$("#editForm").attr('action','/employee/edit_user/'+ id)
+				$("#editForm").attr('action','/employee/edit_admin/'+ id)
 				var user = data[0].fields
 				$("#edit-username").val(user.username)
 				$("#edit-first_name").val(user.first_name)

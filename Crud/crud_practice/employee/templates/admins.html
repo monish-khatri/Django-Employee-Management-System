@@ -25,7 +25,7 @@
 		<div class="table-title">
 			<div class="row">
 				<div class="col-sm-6">
-					<h2>Manage <b>Users</b></h2>
+					<h2>Manage <b>Admins</b></h2>
 				</div>
 				<div class="col-sm-6">
 					<a href="#addUserModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add User</span></a>
@@ -56,7 +56,7 @@
 					<th class="{% url_replace request 'order_by' 'first_name' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'first_name' '-' %}">Full Name</a></th>
 					<th class="{% url_replace request 'order_by' 'username' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'username' '-' %}">Username</a></th>
 					<th class="{% url_replace request 'order_by' 'email' '-' 'True' %} header-class" ><a href="?{% url_replace request 'order_by' 'email' '-' %}">Email</a></th>
-					<th class="{% url_replace request 'order_by' 'is_superuser' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'is_superuser' '-' %}">Super User</a></th>
+					<th class="{% url_replace request 'order_by' 'is_superuser' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'is_superuser' '-' %}">Permission</a></th>
 					<th class="{% url_replace request 'order_by' 'is_active' '-' 'True' %} header-class"><a href="?{% url_replace request 'order_by' 'is_active' '-' %}">Status</a></th>
 					<th>Actions</th>
 				</tr>
@@ -75,13 +75,13 @@
 			<td>{%if user.get_full_name != ''%}{{user.get_full_name|capfirst}}{% else %} N/A {%endif%}</td>
 			<td>{{user.username|lower}}</td>
 			<td>{{user.email}}</td>
-			<td>{% if user.is_superuser %}<i class="fa fa-user-secret verified" aria-hidden="true"  data-toggle="tooltip" title="Super User"></i>
-				{% else %}<i class="fa fa-user dangerous" aria-hidden="true" data-toggle="tooltip" title="Normal User"></i>
+			<td>{% if user.is_superuser %}<i class="fa fa-user-secret verified" aria-hidden="true"  data-toggle="tooltip" title="Super Admin"></i>
+				{% else %}<i class="fa fa-user dangerous" aria-hidden="true" data-toggle="tooltip" title="Regular Admin"></i>
 				{%endif%}</td>
 			<td>{% if user.is_active %}<i class="material-icons verified check_circle" data-toggle="tooltip" title="Active"></i>{% else %}<i class="material-icons cancel dangerous" data-toggle="tooltip" title="In-active"></i>{%endif%}</td>
 			<td>
-			  <a data-form="/employee/edit_user/{{user.id}}" data-id="{{user.id}}" class="view user-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
-			  <a data-form="/employee/edit_user/{{user.id}}" data-id="{{user.id}}" class="edit user-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+			  <a data-form="/employee/edit_admin/{{user.id}}" data-id="{{user.id}}" class="view user-view" data-toggle="modal"><i class="material-icons view" data-toggle="tooltip" title="View">&#xE417;</i></a>
+			  <a data-form="/employee/edit_admin/{{user.id}}" data-id="{{user.id}}" class="edit user-edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 			  <a href="#deleteModal" data-form="/employee/user_delete/{{user.id}}" class="delete delete-single" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 			</td>
 		  </tr>
@@ -127,9 +127,9 @@
 </div>
 </div>
 	{% include 'delete.html' %}
-	{% include 'edit_user.html' %}
-	{% include 'add_user.html' %}
-	{% include 'view_user.html' %}
+	{% include 'edit_admin.html' %}
+	{% include 'add_admin.html' %}
+	{% include 'view_admin.html' %}
 	<!-- Open modal iif redirect('/user#addUserModal') in djnago view
 		<script>
 		$(document).ready(function() {

@@ -3,10 +3,10 @@
 <div id="addUserModal" class="modal fade">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form id="addUserForm" action="/employee/users/" method="post" enctype="multipart/form-data">
+			<form id="addUserForm" action="/employee/admins/" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="modal-header">
-					<h4 class="modal-title">Add User</h4>
+					<h4 class="modal-title">Add Admin</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				</div>
 				<div class="modal-body">
