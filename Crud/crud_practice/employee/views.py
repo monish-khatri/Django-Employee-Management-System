@@ -288,7 +288,10 @@ def team_employee(request,id):
             previousUrl = request.session.get('previousUrl')
         order_by = request.POST.get('order_by', '-id')
         searchName = request.POST.get('search','')
-        teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
+        if request.user.is_superuser:
+            teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
+        else:
+            teamEmployee = Employee.objects.filter(Q(user_id=request.user.id),Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
         team = EmployeeTeam.objects.get(id=id)
         paginator = Paginator(teamEmployee, 5)
         page_number = request.GET.get('page',1)
