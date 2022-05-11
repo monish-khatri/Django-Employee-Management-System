@@ -165,7 +165,7 @@ def user_register(request):
                 users = get_user(request)
                 return render(request,"admins.html",users)
         else:
-            messages.info(request,'Permission Denied. Please Contact your administrator')
+            messages.error(request,'You do not have access to this area. Contact your site administrator to obtain access.')
             return redirect('/login')
     else:
         return redirect('/login')
