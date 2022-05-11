@@ -300,3 +300,9 @@ def team_employee(request,id):
         return render(request,"team_employee.html",{'previousUrl':previousUrl,'team':team,'employees':pageEmployee,'totalRecords': len(teamEmployee),'order_by':order_by,'searchName':searchName})
     else:
         return redirect('/login')
+
+def about_us(request):
+    if is_authenticated(request):
+        return render(request,"about_us.html")
+    else:
+        return redirect('/login')
