@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', #Localization
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -74,7 +75,17 @@ TEMPLATES = [
         },
     },
 ]
+#define langauge code
+# Available language code: https://github.com/django/django/blob/bebd4cfa8f5e0d2dff2de5e50d86e849a40f4bb2/django/conf/global_settings.py#L51
+LANGUAGES = [
+  ('en-us', 'English'),
+  ('hi', 'Hindi'),
+]
 
+#We need now to point to this locale file
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
 WSGI_APPLICATION = 'crud_practice.wsgi.application'
 
 
@@ -84,7 +95,7 @@ WSGI_APPLICATION = 'crud_practice.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
+        'NAME': 'django_crud',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
