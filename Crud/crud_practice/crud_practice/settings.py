@@ -80,6 +80,7 @@ TEMPLATES = [
 LANGUAGES = [
   ('en-us', 'English'),
   ('hi', 'Hindi'),
+  ('es', 'Spanish'),
 ]
 
 #We need now to point to this locale file
@@ -97,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'django_crud',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'M0nish@10',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {

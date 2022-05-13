@@ -2,7 +2,8 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import User,auth
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as direct_login
-
+from django.core.cache import cache
+import secrets
 # Create your views here.
 
 
@@ -70,3 +71,14 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('/login')
+
+def login_with_magic_link(request,token):
+    if request.method == 'GET':
+        email = cache.get(token)
+        if email is None:
+            messages.error(request,'Magic Link invalid/expired')
+            return redirect('/login')
+        cache.delete(token)
+        user, _ = User.objects.get_or_create(email=email)
+        auth.login(request, user)
+        return redirect("/employee")
