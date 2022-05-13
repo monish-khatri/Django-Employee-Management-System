@@ -1,6 +1,6 @@
 from tokenize import group
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseBadRequest
 from employee.forms import EmployeeForm,UserForm,UserUpdateForm,EmployeeTeamForm
 from employee.models import Employee,EmployeeTeam
 from django.contrib import messages
@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q
 from datetime import datetime
+from django.core.cache import cache
+import secrets
 
 
 # Create your views here.
@@ -150,8 +152,12 @@ def user_register(request):
                 if form.is_valid():
                     try:
                         form.save()
+                        token = secrets.token_urlsafe(nbytes=32)
+                        print(token)
+                        link = settings.APP_URL+"magic-link/"+token
+                        cache.set(token, request.POST['email'], timeout=10 * 60)
                         subject = 'Biztech: Welcome to Employee Management System'
-                        message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL)
+                        message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}\nOR\nYou Can Login Using Magic Link:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL,link)
                         send_mail(subject,message,'emp@int.biztechcs.com',[request.POST['email']],fail_silently=False)
                         messages.success(request,'User Added Successfully!')
                         return redirect('/employee/admins')
@@ -306,3 +312,4 @@ def about_us(request):
         return render(request,"about_us.html")
     else:
         return redirect('/login')
+
