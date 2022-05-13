@@ -61,7 +61,7 @@ def login(request):
                     auth.login(request, user)
                     if remember_me == 'on':
                         request.session.set_expiry(60*60*24*7)
-                    return redirect('/employee')
+                    return redirect('/employee/profile')
                 else:
                     messages.error(request,'Incorrect username or password!')
                     return render(request, 'login.html')
@@ -81,4 +81,4 @@ def login_with_magic_link(request,token):
     cache.delete(token)
     user, _ = User.objects.get_or_create(email=email)
     auth.login(request, user)
-    return redirect("/employee")
+    return redirect("/employee/profile")

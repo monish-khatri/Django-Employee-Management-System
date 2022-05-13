@@ -322,6 +322,9 @@ table.table .avatar {
 						<a class="nav-link" href="/"><img src="https://pm.biztechconsultancy.com/assets/img/favicon.ico" class="biztech-logo" alt="Logo"></a>
 					</li>
 					{% if user.is_authenticated %}
+						<li class="nav-item">
+							<a class="nav-link" href="/employee/profile/">Profile</a>
+						</li>
 						{% if user.is_superuser %}
 						<li class="nav-item">
 							<a class="nav-link" href="/employee/admins/">Admins</a>

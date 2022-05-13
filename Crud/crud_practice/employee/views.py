@@ -312,3 +312,9 @@ def about_us(request):
     else:
         return redirect('/login')
 
+def profile(request):
+    if is_authenticated(request):
+        userProfile = User.objects.get(id=request.user.id)
+        return render(request,"profile.html",{'userProfile': userProfile})
+    else:
+        return redirect('/login')

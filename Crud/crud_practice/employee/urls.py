@@ -14,4 +14,5 @@ urlpatterns = [
     path('team_delete/<str:str>', views.team_delete),
     path('team/<int:id>', views.team_employee),
     path('about-us/', views.about_us),
+    path('profile/', views.profile),
 ]
