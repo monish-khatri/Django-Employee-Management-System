@@ -88,7 +88,6 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 WSGI_APPLICATION = 'crud_practice.wsgi.application'
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",

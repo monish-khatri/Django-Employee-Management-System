@@ -1,6 +1,7 @@
 from tokenize import group
 from django.shortcuts import render, redirect
 from django.http import HttpResponse,HttpResponseBadRequest
+from django.views import View
 from employee.forms import EmployeeForm,UserForm,UserUpdateForm,EmployeeTeamForm
 from employee.models import Employee,EmployeeTeam
 from django.contrib import messages
@@ -13,37 +14,82 @@ from django.db.models import Q
 from datetime import datetime
 from django.core.cache import cache
 import secrets
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import user_passes_test
 
+class EmployeeView(View):
+    def get(self, request, *args, **kwargs):
+        employees = get_employees(request)
+        return render(request,"index.html",employees)
 
-# Create your views here.
-def employee(request):
-    if is_authenticated(request):
-        if request.method == "POST":
-            form = EmployeeForm(request.POST,request.FILES)
-            if form.is_valid():
-                try:
-                    # To Store logged in user in the database directly
-                    obj = form.save(commit=False) # Return an object without saving to the DB
-                    obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
-                    obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
-                    obj.team = EmployeeTeam.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
-                    obj.save() # Save the final "real form" to the DB
-                    messages.success(request,'Employee Added Successfully!')
-                    return redirect('/employee')
-                except:
-                    messages.error(request,form.errors)
-                    return redirect('/employee')
-            else:
+    def post(self, request, *args, **kwargs):
+        form = EmployeeForm(request.POST,request.FILES)
+        if form.is_valid():
+            try:
+                # To Store logged in user in the database directly
+                obj = form.save(commit=False) # Return an object without saving to the DB
+                obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
+                obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
+                obj.team = EmployeeTeam.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
+                obj.save() # Save the final "real form" to the DB
+                messages.success(request,'Employee Added Successfully!')
+                return redirect('/employee')
+            except:
                 messages.error(request,form.errors)
                 return redirect('/employee')
         else:
-            employees = get(request)
-            return render(request,"index.html",employees)
-    else:
-        return redirect('/login')
+            messages.error(request,form.errors)
+            return redirect('/employee')
+
+class AdminView(View):
+    def dispatch(self,request, *args, **kwargs):
+        if not request.user.is_superuser:
+            messages.error(request,'You do not have access to this area. Contact your site administrator to obtain access.')
+            return redirect('/login')
+        return super(AdminView, self).dispatch(request, *args, **kwargs)
 
 
-def get(request):
+    def get(self, request, *args, **kwargs):
+        users = get_user(request)
+        return render(request,"admins.html",users)
+
+    def post(self, request, *args, **kwargs):
+        form = UserForm(request.POST,request.FILES)
+        if form.is_valid():
+            try:
+                form.save()
+                token = secrets.token_urlsafe(nbytes=32)
+                link = settings.APP_URL+"magic-link/"+token
+                cache.set(token, request.POST['email'], timeout=10 * 60)
+                subject = 'Biztech: Welcome to Employee Management System'
+                message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}\nOR\nYou Can Login Using Magic Link:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL,link)
+                send_mail(subject,message,'emp@int.biztechcs.com',[request.POST['email']],fail_silently=False)
+                messages.success(request,'User Added Successfully!')
+                return redirect('/employee/admins')
+            except:
+                messages.error(request,form.errors)
+                return redirect('/employee/admins')
+        else:
+            messages.error(request,form.errors)
+            return redirect('/employee/admins')
+
+class TeamView(View):
+    def get(self, request, *args, **kwargs):
+        teams = get_teams(request)
+        return render(request,"teams.html",teams)
+
+    def post(self, request, *args, **kwargs):
+        form = EmployeeTeamForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Team Added Successfully!')
+            return redirect('/employee/teams')
+        else:
+            messages.error(request,form.errors)
+            return redirect('/employee/teams')
+
+
+def get_employees(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', '-id')
         searchName = request.GET.get('search','')
@@ -144,37 +190,6 @@ def is_authenticated(request):
     else:
         return False
 
-def user_register(request):
-    if is_authenticated(request):
-        if request.user.is_superuser:
-            if request.method == "POST":
-                form = UserForm(request.POST,request.FILES)
-                if form.is_valid():
-                    try:
-                        form.save()
-                        token = secrets.token_urlsafe(nbytes=32)
-                        link = settings.APP_URL+"magic-link/"+token
-                        cache.set(token, request.POST['email'], timeout=10 * 60)
-                        subject = 'Biztech: Welcome to Employee Management System'
-                        message = ("Your Account Detail:\nUsername:{}\nPassword:{}\nLogin Url:{}\nOR\nYou Can Login Using Magic Link:{}").format(request.POST['username'],request.POST['password1'],settings.APP_URL,link)
-                        send_mail(subject,message,'emp@int.biztechcs.com',[request.POST['email']],fail_silently=False)
-                        messages.success(request,'User Added Successfully!')
-                        return redirect('/employee/admins')
-                    except:
-                        messages.error(request,form.errors)
-                        return redirect('/employee/admins')
-                else:
-                    messages.error(request,form.errors)
-                    return redirect('/employee/admins')
-            else:
-                users = get_user(request)
-                return render(request,"admins.html",users)
-        else:
-            messages.error(request,'You do not have access to this area. Contact your site administrator to obtain access.')
-            return redirect('/login')
-    else:
-        return redirect('/login')
-
 def get_user(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', '-id')
@@ -215,25 +230,6 @@ def edit_admin(request, id):
                 return render(request,"admins.html",users)
     else:
         return redirect('/login')
-
-
-def teams(request):
-    if is_authenticated(request):
-        if request.method == "POST":
-            form = EmployeeTeamForm(request.POST)
-            if form.is_valid():
-                form.save()
-                messages.success(request,'Team Added Successfully!')
-                return redirect('/employee/teams')
-            else:
-                messages.error(request,form.errors)
-                return redirect('/employee/teams')
-        else:
-            teams = get_teams(request)
-            return render(request,"teams.html",teams)
-    else:
-        return redirect('/login')
-
 
 def get_teams(request):
     if is_authenticated(request):
