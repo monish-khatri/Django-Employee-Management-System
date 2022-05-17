@@ -29,7 +29,7 @@
 				</div>
 				<div class="col-sm-6">
 					<a href="#addUserModal" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add Admin</span></a>
-				{% if users %}
+				{% if admins %}
 					<a data-form="/employee/delete_admin/" class="btn btn-danger delete-multiple" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>
 				{% endif %}
 				</div>
@@ -45,7 +45,7 @@
 			<thead>
 				<tr>
 					<th>
-						{% if users %}
+						{% if admins %}
 							<span class="custom-checkbox">
 								<input type="checkbox" id="selectAll">
 								<label for="selectAll"></label>
@@ -62,8 +62,8 @@
 				</tr>
 			</thead>
 			<tbody>
-	  {% if users %}
-		{% for user in users %}
+	  {% if admins %}
+		{% for user in admins %}
 		  <tr>
 			<td>
 				<span class="custom-checkbox">
@@ -71,7 +71,7 @@
 					<label for="checkbox{{user.id}}"></label>
 				</span>
 			</td>
-			<td>{{ forloop.counter0|add:users.start_index}}</td>
+			<td>{{ forloop.counter0|add:admins.start_index}}</td>
 			<td>{%if user.get_full_name != ''%}{{user.get_full_name|capfirst}}{% else %} N/A {%endif%}</td>
 			<td>{{user.username|lower}}</td>
 			<td>{{user.email}}</td>
@@ -96,27 +96,27 @@
 			</tbody>
 		</table>
 		<div class="clearfix">
-			<div class="hint-text">Showing <b>{{users.start_index}} to {{users.end_index}}</b> of <b>{{totalRecords}}</b> entries</div>
+			<div class="hint-text">Showing <b>{{admins.start_index}} to {{admins.end_index}}</b> of <b>{{totalRecords}}</b> entries</div>
 			<div class="pagination">
 				<span class="step-links">
 					<ul class="pagination">
-						{% if users.has_previous or users.has_next %}
-							{% if users.has_previous %}
+						{% if admins.has_previous or admins.has_next %}
+							{% if admins.has_previous %}
 							<li class="page-item"><a href="?page=1&order_by={{order_by}}&search={{searchName}}">First</a></li>
-								<li class="page-item"><a href="?page={{ users.previous_page_number }}&order_by={{order_by}}&search={{searchName}}">Previous</a></li>
+								<li class="page-item"><a href="?page={{ admins.previous_page_number }}&order_by={{order_by}}&search={{searchName}}">Previous</a></li>
 							{% endif %}
-							{% for page in users.adjusted_elided_pages %}
-								{% if users.number == page %}
+							{% for page in admins.adjusted_elided_pages %}
+								{% if admins.number == page %}
 									<li class="page-item active"><a href="?page={{page}}&order_by={{order_by}}&search={{searchName}}" class="page-link">{{page}}</a></li>
-								{% elif page == users.paginator.ELLIPSIS %}
+								{% elif page == admins.paginator.ELLIPSIS %}
 									<li class="page-item"><a class="page-link">{{page}}</a></li>
 								{% else %}
 									<li class="page-item"><a href="?page={{page}}&order_by={{order_by}}&search={{searchName}}" class="page-link">{{page}}</a></li>
 								{% endif %}
 							{% endfor %}
-							{% if users.has_next %}
-								<li class="page-item"><a href="?page={{ users.next_page_number }}&order_by={{order_by}}&search={{searchName}}" class="page-link">Next</a></li>
-								<li class="page-item"><a href="?page={{ users.paginator.num_pages }}&order_by={{order_by}}&search={{searchName}}">Last</a></li>
+							{% if admins.has_next %}
+								<li class="page-item"><a href="?page={{ admins.next_page_number }}&order_by={{order_by}}&search={{searchName}}" class="page-link">Next</a></li>
+								<li class="page-item"><a href="?page={{ admins.paginator.num_pages }}&order_by={{order_by}}&search={{searchName}}">Last</a></li>
 							{% endif %}
 						{% endif %}
 					</ul>

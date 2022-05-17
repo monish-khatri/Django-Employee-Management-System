@@ -50,8 +50,8 @@ class AdminView(View):
 
 
     def get(self, request, *args, **kwargs):
-        users = get_user(request)
-        return render(request,"admins.html",users)
+        admins = get_user(request)
+        return render(request,"admins.html",admins)
 
     def post(self, request, *args, **kwargs):
         form = UserForm(request.POST,request.FILES)
@@ -194,13 +194,13 @@ def get_user(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', '-id')
         searchName = request.GET.get('search','')
-        users = User.objects.filter(Q(email__contains=searchName) | Q(username__icontains=searchName) | Q(first_name__icontains=searchName) | Q(last_name__icontains=searchName)).order_by(order_by)
+        admins = User.objects.filter(Q(email__contains=searchName) | Q(username__icontains=searchName) | Q(first_name__icontains=searchName) | Q(last_name__icontains=searchName)).order_by(order_by)
 
-        paginator = Paginator(users, 5)
+        paginator = Paginator(admins, 5)
         page_number = request.GET.get('page',1)
-        pageUser = paginator.get_page(page_number)
-        pageUser.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return {'users':pageUser,'totalRecords': len(users),'UserForm':UserForm(),'UserUpdateForm':UserUpdateForm(),'order_by':order_by,'searchName':searchName}
+        pageAdmin = paginator.get_page(page_number)
+        pageAdmin.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+        return {'admins':pageAdmin,'totalRecords': len(admins),'UserForm':UserForm(),'UserUpdateForm':UserUpdateForm(),'order_by':order_by,'searchName':searchName}
     else:
         return redirect('/login')
 
