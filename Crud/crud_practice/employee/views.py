@@ -18,9 +18,32 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import user_passes_test
 
 class EmployeeView(View):
+    http_method_names = ['get', 'post', 'put', 'delete']
+    is_edit = False
+
+    def dispatch(self,request, *args, **kwargs):
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'put':
+            return self.put(request, *args, **kwargs)
+        if method == 'delete':
+            return self.delete(request, *args, **kwargs)
+        return super(EmployeeView, self).dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
-        employees = get_employees(request)
-        return render(request,"index.html",employees)
+        if self.is_edit:
+            id = self.kwargs['id']
+            employee = Employee.objects.get(id=id)
+            if employee.team is not None:
+                team = EmployeeTeam.objects.get(name=employee.team)
+                # Convert modal instance to json format
+                jsonObject = serializers.serialize('json', [ employee , team])
+            else:
+                jsonObject = serializers.serialize('json', [ employee])
+
+            return HttpResponse(jsonObject)
+        else:
+            employees = get_employees(request)
+            return render(request,"index.html",employees)
 
     def post(self, request, *args, **kwargs):
         form = EmployeeForm(request.POST,request.FILES)
@@ -41,17 +64,66 @@ class EmployeeView(View):
             messages.error(request,form.errors)
             return redirect('/employee')
 
+    def put(self, request, *args, **kwargs):
+        id = self.kwargs['id']
+        employee = Employee.objects.get(id=id)
+        form = EmployeeForm(request.POST,request.FILES, instance = employee)
+        if form.is_valid():
+            try:
+                # To Store logged in user in the database directly
+                obj = form.save(commit=False) # Return an object without saving to the DB
+                obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
+                obj.team = EmployeeTeam.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
+                obj.save() # Save the final "real form" to the DB
+                messages.success(request,'Employee Updated Successfully!')
+                return redirect('/employee')
+            except:
+                messages.error(request,'Something Went Wrong!')
+                return redirect('/employee')
+        else:
+            messages.error(request,form.errors)
+            return redirect('/employee')
+
+    def delete(self, request, *args, **kwargs):
+        str = self.kwargs['str']
+        str = str.rstrip(',')
+        idList = [int(x) for x in str.split(',')]
+        try:
+            for id in idList:
+                employee = Employee.objects.get(id=id)
+                employee.delete()
+            messages.success(request,'Employees Deleted Successfully!')
+            return redirect('/employee')
+        except:
+            messages.error(request,'Something Went Wrong!')
+            return redirect('/employee')
+
+
 class AdminView(View):
+    http_method_names = ['get', 'post', 'put', 'delete']
+    is_edit = False
     def dispatch(self,request, *args, **kwargs):
+        method = self.request.POST.get('_method', '').lower()
         if not request.user.is_superuser:
             messages.error(request,'You do not have access to this area. Contact your site administrator to obtain access.')
             return redirect('/login')
+        if method == 'put':
+            return self.put(request, *args, **kwargs)
+        if method == 'delete':
+            return self.delete(request, *args, **kwargs)
         return super(AdminView, self).dispatch(request, *args, **kwargs)
 
 
     def get(self, request, *args, **kwargs):
-        admins = get_user(request)
-        return render(request,"admins.html",admins)
+        if self.is_edit:
+            id = self.kwargs['id']
+            user = User.objects.get(id=id)
+            # Convert modal instance to json format
+            jsonObject = serializers.serialize('json', [user])
+            return HttpResponse(jsonObject)
+        else:
+            admins = get_user(request)
+            return render(request,"admins.html",admins)
 
     def post(self, request, *args, **kwargs):
         form = UserForm(request.POST,request.FILES)
@@ -73,91 +145,26 @@ class AdminView(View):
             messages.error(request,form.errors)
             return redirect('/employee/admins')
 
-class TeamView(View):
-    def get(self, request, *args, **kwargs):
-        teams = get_teams(request)
-        return render(request,"teams.html",teams)
-
-    def post(self, request, *args, **kwargs):
-        form = EmployeeTeamForm(request.POST)
+    def put(self, request, *args, **kwargs):
+        id = self.kwargs['id']
+        user = User.objects.get(id=id)
+        form = UserUpdateForm(request.POST,instance = user)
         if form.is_valid():
-            form.save()
-            messages.success(request,'Team Added Successfully!')
-            return redirect('/employee/teams')
+            try:
+                if id == request.user.id and (not request.POST.get('is_superuser',False) or not request.POST.get('is_active',False)):
+                    messages.info(request, 'Cannot update role or status cause you\'re logged in with this user')
+                else:
+                    form.save()
+                    messages.success(request,'User Updated Successfully!')
+                return redirect('/employee/admins')
+            except:
+                messages.error(request,'Something Went Wrong!')
+                return redirect('/employee/admins')
         else:
-            messages.error(request,form.errors)
-            return redirect('/employee/teams')
+            users = get_user(request)
+            return render(request,"admins.html",users)
 
-
-def get_employees(request):
-    if is_authenticated(request):
-        order_by = request.GET.get('order_by', '-id')
-        searchName = request.GET.get('search','')
-        if request.user.is_superuser:
-            employees = Employee.objects.filter(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName)| Q(team__name__icontains=searchName)| Q(user__username__icontains=searchName)).order_by(order_by)
-        else:
-            employees = Employee.objects.filter(Q(user_id=request.user.id),(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName))| Q(team__name__icontains=searchName)).order_by(order_by)
-        paginator = Paginator(employees, 5)
-        page_number = request.GET.get('page',1)
-        pageEmployee = paginator.get_page(page_number)
-        pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return {'employees':pageEmployee,'totalRecords': len(employees),'EmployeeForm':EmployeeForm(),'UserForm':UserForm(),'order_by':order_by,'searchName':searchName}
-    else:
-        return redirect('/login')
-
-
-def edit(request, id):
-    if is_authenticated(request):
-        if request.method == "GET":
-            employee = Employee.objects.get(id=id)
-            if employee.team is not None:
-                team = EmployeeTeam.objects.get(name=employee.team)
-                # Convert modal instance to json format
-                jsonObject = serializers.serialize('json', [ employee , team])
-            else:
-                jsonObject = serializers.serialize('json', [ employee])
-
-            return HttpResponse(jsonObject)
-        else:
-            employee = Employee.objects.get(id=id)
-            form = EmployeeForm(request.POST,request.FILES, instance = employee)
-            if form.is_valid():
-                try:
-                    # To Store logged in user in the database directly
-                    obj = form.save(commit=False) # Return an object without saving to the DB
-                    obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
-                    obj.team = EmployeeTeam.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
-                    obj.save() # Save the final "real form" to the DB
-                    messages.success(request,'Employee Updated Successfully!')
-                    return redirect('/employee')
-                except:
-                    messages.error(request,'Something Went Wrong!')
-                    return redirect('/employee')
-            else:
-                messages.error(request,form.errors)
-                return redirect('/employee')
-    else:
-        return redirect('/login')
-
-
-def delete(request, str):
-    if is_authenticated(request):
-        str = str.rstrip(',')
-        idList = [int(x) for x in str.split(',')]
-        try:
-            for id in idList:
-                employee = Employee.objects.get(id=id)
-                employee.delete()
-            messages.success(request,'Employees Deleted Successfully!')
-            return redirect('/employee')
-        except:
-            messages.error(request,'Something Went Wrong!')
-            return redirect('/employee')
-    else:
-        return redirect('/login')
-
-def delete_admin(request, str):
-    if is_authenticated(request):
+    def delete(self, request, *args, **kwargs):
         str = str.rstrip(',')
         idList = [int(x) for x in str.split(',')]
         idList.sort(reverse=True)
@@ -179,6 +186,79 @@ def delete_admin(request, str):
         else:
             messages.success(request,'Users Deleted Successfully!')
         return redirect('/employee/admins')
+
+class TeamView(View):
+    http_method_names = ['get', 'post', 'put', 'delete']
+    is_edit = False
+
+    def dispatch(self,request, *args, **kwargs):
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'put':
+            return self.put(request, *args, **kwargs)
+        if method == 'delete':
+            return self.delete(request, *args, **kwargs)
+        return super(TeamView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if self.is_edit:
+            id = self.kwargs['id']
+            team = EmployeeTeam.objects.get(id=id)
+            jsonObject = serializers.serialize('json', [ team ])
+            return HttpResponse(jsonObject)
+        else:
+            teams = get_teams(request)
+            return render(request,"teams.html",teams)
+
+    def post(self, request, *args, **kwargs):
+        form = EmployeeTeamForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Team Added Successfully!')
+            return redirect('/employee/teams')
+        else:
+            messages.error(request,form.errors)
+            return redirect('/employee/teams')
+
+    def put(self, request, *args, **kwargs):
+        id = self.kwargs['id']
+        team = EmployeeTeam.objects.get(id=id)
+        form = EmployeeTeamForm(request.POST,instance = team)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request,'Team Updated Successfully!')
+                return redirect('/employee/teams')
+            except:
+                messages.error(request,'Something Went Wrong!')
+                return redirect('/employee/teams')
+        else:
+            teams = get_teams(request)
+            return render(request,"teams.html",teams)
+
+    def delete(self, request, *args, **kwargs):
+        str = self.kwargs['str']
+        str = str.rstrip(',')
+        idList = [int(x) for x in str.split(',')]
+        for id in idList:
+            team = EmployeeTeam.objects.get(id=id)
+            team.delete()
+        messages.success(request,'Teams Deleted Successfully!')
+        return redirect('/employee/teams')
+
+
+def get_employees(request):
+    if is_authenticated(request):
+        order_by = request.GET.get('order_by', '-id')
+        searchName = request.GET.get('search','')
+        if request.user.is_superuser:
+            employees = Employee.objects.filter(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName)| Q(team__name__icontains=searchName)| Q(user__username__icontains=searchName)).order_by(order_by)
+        else:
+            employees = Employee.objects.filter(Q(user_id=request.user.id),(Q(email__contains=searchName) | Q(phone__icontains=searchName) | Q(name__icontains=searchName))| Q(team__name__icontains=searchName)).order_by(order_by)
+        paginator = Paginator(employees, 5)
+        page_number = request.GET.get('page',1)
+        pageEmployee = paginator.get_page(page_number)
+        pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+        return {'employees':pageEmployee,'totalRecords': len(employees),'EmployeeForm':EmployeeForm(),'UserForm':UserForm(),'order_by':order_by,'searchName':searchName}
     else:
         return redirect('/login')
 
@@ -204,33 +284,6 @@ def get_user(request):
     else:
         return redirect('/login')
 
-def edit_admin(request, id):
-    if is_authenticated(request):
-        if request.method == "GET":
-            user = User.objects.get(id=id)
-            # Convert modal instance to json format
-            jsonObject = serializers.serialize('json', [user])
-            return HttpResponse(jsonObject)
-        else:
-            user = User.objects.get(id=id)
-            form = UserUpdateForm(request.POST,instance = user)
-            if form.is_valid():
-                try:
-                    if id == request.user.id and (not request.POST.get('is_superuser',False) or not request.POST.get('is_active',False)):
-                        messages.info(request, 'Cannot update role or status cause you\'re logged in with this user')
-                    else:
-                        form.save()
-                        messages.success(request,'User Updated Successfully!')
-                    return redirect('/employee/admins')
-                except:
-                    messages.error(request,'Something Went Wrong!')
-                    return redirect('/employee/admins')
-            else:
-                users = get_user(request)
-                return render(request,"admins.html",users)
-    else:
-        return redirect('/login')
-
 def get_teams(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', 'name')
@@ -241,42 +294,6 @@ def get_teams(request):
         pageTeams = paginator.get_page(page_number)
         pageTeams.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
         return {'teams':pageTeams,'totalRecords': len(teams),'EmployeeTeamForm':EmployeeTeamForm(),'order_by':order_by,'searchName':searchName}
-    else:
-        return redirect('/login')
-
-def team_delete(request, str):
-    if is_authenticated(request):
-        str = str.rstrip(',')
-        idList = [int(x) for x in str.split(',')]
-        for id in idList:
-            team = EmployeeTeam.objects.get(id=id)
-            team.delete()
-
-            messages.success(request,'Teams Deleted Successfully!')
-        return redirect('/employee/teams')
-    else:
-        return redirect('/login')
-
-def team_edit(request, id):
-    if is_authenticated(request):
-        if request.method == "GET":
-            team = EmployeeTeam.objects.get(id=id)
-            jsonObject = serializers.serialize('json', [ team ])
-            return HttpResponse(jsonObject)
-        else:
-            team = EmployeeTeam.objects.get(id=id)
-            form = EmployeeTeamForm(request.POST,instance = team)
-            if form.is_valid():
-                try:
-                    form.save()
-                    messages.success(request,'Team Updated Successfully!')
-                    return redirect('/employee/teams')
-                except:
-                    messages.error(request,'Something Went Wrong!')
-                    return redirect('/employee/teams')
-            else:
-                teams = get_teams(request)
-                return render(request,"teams.html",teams)
     else:
         return redirect('/login')
 

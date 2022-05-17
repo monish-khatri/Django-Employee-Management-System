@@ -52,7 +52,6 @@ $(document).ready(function(){
 		const csrftoken = getCookie('csrftoken');
 		$.ajax({
             type: 'GET',
-			headers: {'X-CSRFToken': csrftoken},
             url: url,
 			dataType: 'json',
             success: function(data) {

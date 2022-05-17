@@ -4,6 +4,7 @@
         <div class="modal-content">
             <form id="editForm" action="/" method="post">
 				{% csrf_token %}
+				<input type="hidden" name="_method" value="put">
 				<div class="modal-header">
 					<h4 class="modal-title">Update Team</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

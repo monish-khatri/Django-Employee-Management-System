@@ -5,6 +5,7 @@
         <div class="modal-content">
             <form id="deleteForm" action="/" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="_method" value="delete">
                 <div class="modal-header">
                     <h4 class="modal-title">Delete</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
