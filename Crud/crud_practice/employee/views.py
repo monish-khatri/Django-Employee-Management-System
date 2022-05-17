@@ -1,6 +1,6 @@
 from tokenize import group
 from django.shortcuts import render, redirect
-from django.http import HttpResponse,HttpResponseBadRequest
+from django.http import HttpResponse
 from django.views import View
 from employee.forms import EmployeeForm,UserForm,UserUpdateForm,EmployeeTeamForm
 from employee.models import Employee,EmployeeTeam
@@ -13,9 +13,9 @@ from django.conf import settings
 from django.db.models import Q
 from datetime import datetime
 from django.core.cache import cache
+from django.views.generic.base import TemplateView
 import secrets
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import user_passes_test
+
 
 class EmployeeView(View):
     http_method_names = ['get', 'post', 'put', 'delete']
@@ -113,7 +113,6 @@ class AdminView(View):
             return self.delete(request, *args, **kwargs)
         return super(AdminView, self).dispatch(request, *args, **kwargs)
 
-
     def get(self, request, *args, **kwargs):
         if self.is_edit:
             id = self.kwargs['id']
@@ -187,6 +186,7 @@ class AdminView(View):
             messages.success(request,'Users Deleted Successfully!')
         return redirect('/employee/admins')
 
+
 class TeamView(View):
     http_method_names = ['get', 'post', 'put', 'delete']
     is_edit = False
@@ -246,6 +246,48 @@ class TeamView(View):
         return redirect('/employee/teams')
 
 
+class TeamEmployeeView(TemplateView):
+    template_name = 'team_employee.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(TeamEmployeeView, self).get_context_data(*args, **kwargs)
+        if self.request.method == 'GET':
+            self.request.session['previousUrl'] = self.request.META.get('HTTP_REFERER')
+            previousUrl = self.request.session.get('previousUrl')
+        else:
+            previousUrl = self.request.session.get('previousUrl')
+        order_by = self.request.POST.get('order_by', '-id')
+        searchName = self.request.POST.get('search','')
+        id = self.kwargs['id']
+        if self.request.user.is_superuser:
+            teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
+        else:
+            teamEmployee = Employee.objects.filter(Q(user_id=self.request.user.id),Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
+        team = EmployeeTeam.objects.get(id=id)
+        paginator = Paginator(teamEmployee, 5)
+        page_number = self.request.GET.get('page',1)
+        pageEmployee = paginator.get_page(page_number)
+        pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
+        context = {'previousUrl':previousUrl,'team':team,'employees':pageEmployee,'totalRecords': len(teamEmployee),'order_by':order_by,'searchName':searchName}
+        return context
+
+
+class AboutUsView(TemplateView):
+    template_name = 'about_us.html'
+    def get_context_data(self, *args, **kwargs):
+        context = super(AboutUsView, self).get_context_data(*args, **kwargs)
+        return context
+
+
+class ProfileView(TemplateView):
+    template_name = 'profile.html'
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProfileView, self).get_context_data(*args, **kwargs)
+        userProfile = User.objects.get(id=self.request.user.id)
+        context = {'userProfile': userProfile}
+        return context
+
+
 def get_employees(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', '-id')
@@ -270,6 +312,7 @@ def is_authenticated(request):
     else:
         return False
 
+
 def get_user(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', '-id')
@@ -284,6 +327,7 @@ def get_user(request):
     else:
         return redirect('/login')
 
+
 def get_teams(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', 'name')
@@ -294,40 +338,5 @@ def get_teams(request):
         pageTeams = paginator.get_page(page_number)
         pageTeams.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
         return {'teams':pageTeams,'totalRecords': len(teams),'EmployeeTeamForm':EmployeeTeamForm(),'order_by':order_by,'searchName':searchName}
-    else:
-        return redirect('/login')
-
-def team_employee(request,id):
-    if is_authenticated(request):
-        if request.method == 'GET':
-            request.session['previousUrl'] = request.META.get('HTTP_REFERER')
-            previousUrl = request.session.get('previousUrl')
-        else:
-            previousUrl = request.session.get('previousUrl')
-        order_by = request.POST.get('order_by', '-id')
-        searchName = request.POST.get('search','')
-        if request.user.is_superuser:
-            teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
-        else:
-            teamEmployee = Employee.objects.filter(Q(user_id=request.user.id),Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
-        team = EmployeeTeam.objects.get(id=id)
-        paginator = Paginator(teamEmployee, 5)
-        page_number = request.GET.get('page',1)
-        pageEmployee = paginator.get_page(page_number)
-        pageEmployee.adjusted_elided_pages = paginator.get_elided_page_range(page_number)
-        return render(request,"team_employee.html",{'previousUrl':previousUrl,'team':team,'employees':pageEmployee,'totalRecords': len(teamEmployee),'order_by':order_by,'searchName':searchName})
-    else:
-        return redirect('/login')
-
-def about_us(request):
-    if is_authenticated(request):
-        return render(request,"about_us.html")
-    else:
-        return redirect('/login')
-
-def profile(request):
-    if is_authenticated(request):
-        userProfile = User.objects.get(id=request.user.id)
-        return render(request,"profile.html",{'userProfile': userProfile})
     else:
         return redirect('/login')

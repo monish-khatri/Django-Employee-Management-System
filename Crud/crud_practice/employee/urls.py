@@ -12,7 +12,7 @@ urlpatterns = [
     path('delete/<str:str>', login_required(views.EmployeeView.as_view(),'','login')),
     path('delete_admin/<str:str>', login_required(views.AdminView.as_view(),'','login')),
     path('team_delete/<str:str>', login_required(views.TeamView.as_view(),'','login')),
-    path('team/<int:id>', views.team_employee),
-    path('about-us/', views.about_us),
-    path('profile/', views.profile),
+    path('team/<int:id>',login_required(views.TeamEmployeeView.as_view(),'','login')),
+    path('about-us/', login_required(views.AboutUsView.as_view(),'','login')),
+    path('profile/', login_required(views.ProfileView.as_view(),'','login')),
 ]
