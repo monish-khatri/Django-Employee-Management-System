@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'employee',
+    'generic_view',
     'accounts',
     # To clean up images after record deleted
     'django_cleanup.apps.CleanupConfig',

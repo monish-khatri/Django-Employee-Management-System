@@ -1,0 +1,24 @@
+{% extends 'home.html' %}
+{% block content %}
+<div class="container-xl">
+    <div class="table-responsive">
+		<div class="table-wrapper">
+			<div class="table-title">
+				<div class="row">
+					<div class="col-sm-6">
+						<h2><b>Generic Detail View</b></h2>
+					</div>
+					<div class="col-sm-6">
+                        <a href="create/" class="btn btn-success"><i class="material-icons">&#xE147;</i> <span>Add</span></a>
+						<a href="/generic_view" class="btn btn-danger"><i class="fa fa-arrow-left" aria-hidden="true"></i><span>Back</span></a>
+					</div>
+				</div>
+			</div>
+
+            <h1>{{ object.title }}</h1>
+            <p>{{ object.description }}</p>
+		</div>
+	</div>
+  </div>
+</div>
+{% endblock %}

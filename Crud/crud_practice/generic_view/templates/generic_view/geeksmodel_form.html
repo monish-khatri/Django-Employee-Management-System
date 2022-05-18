@@ -1,0 +1,35 @@
+{% extends 'home.html' %}
+{% block content %}
+<div class="container-xl">
+    <div class="table-responsive">
+		<div class="table-wrapper">
+			<div class="table-title">
+				<div class="row">
+					<div class="col-sm-6">
+						<h2><b>Generic Create/Update View</b></h2>
+					</div>
+				</div>
+			</div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Title:</label>
+                        {{form.title}}
+                    </div>
+                    <div class="form-group">
+                        <label>Description:</label>
+                        {{form.description}}
+                    </div>
+                </div>
+                <div>
+                    <a href="/generic_view" class="btn btn-danger"><span>Cancel</span></a>
+                    <input type="submit" class="btn btn-success" value="Submit">
+                </div>
+            </form>
+		</div>
+	</div>
+  </div>
+
+</div>
+{% endblock %}
