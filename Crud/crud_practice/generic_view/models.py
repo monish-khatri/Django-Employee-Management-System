@@ -14,6 +14,6 @@ class GeeksModel(models.Model):
     # with their title name
     def __str__(self):
         return self.title
-    
+
     def get_absolute_url(self):
         return reverse('list')
