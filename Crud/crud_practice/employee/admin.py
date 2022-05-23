@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Employee
 from reversion.admin import VersionAdmin
+
 # Register your models here.
 # admin.site.register(Employee)
 
@@ -18,3 +19,11 @@ class Employee(admin.ModelAdmin):
       ordering = ['-id']
       # Pagination
       list_per_page = 5
+
+      #To Disable add button return False
+      def has_add_permission(self, request):
+        return True
+
+      #To Disable Delete button return False
+      def has_delete_permission(self, request, obj = None):
+        return True
