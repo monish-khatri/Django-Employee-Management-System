@@ -42,17 +42,17 @@ class Employee(admin.ModelAdmin):
 @admin.register(Team)
 class Team(admin.ModelAdmin):
       # Field to show in table
-      list_display = ['id','name','status']
       # Searching Funcionality on fields
       search_fields = ['name']
       # Order by Listing
       ordering = ['-id']
       # Pagination
       list_per_page = 5
-      def status(self, obj):
-            return obj.status == 1
+      def Status(self, obj):
+            return int(obj.status)
 
-      status.boolean = True
+      Status.boolean = True
+      list_display = ['id','name','Status']
       #To Disable add button return False
       def has_add_permission(self, request):
         return True
