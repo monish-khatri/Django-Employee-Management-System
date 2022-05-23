@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.views import View
 from employee.forms import EmployeeForm,UserForm,UserUpdateForm,EmployeeTeamForm
-from employee.models import Employee,EmployeeTeam
+from employee.models import Employee,Team
 from django.contrib import messages
 from django.core import serializers
 from django.core.paginator import Paginator
@@ -34,7 +34,7 @@ class EmployeeView(View):
             id = self.kwargs['id']
             employee = Employee.objects.get(id=id)
             if employee.team is not None:
-                team = EmployeeTeam.objects.get(name=employee.team)
+                team = Team.objects.get(name=employee.team)
                 # Convert modal instance to json format
                 jsonObject = serializers.serialize('json', [ employee , team])
             else:
@@ -53,7 +53,7 @@ class EmployeeView(View):
                 obj = form.save(commit=False) # Return an object without saving to the DB
                 obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
                 obj.user = User.objects.get(pk=request.user.id) # Add an author field which will contain current user's id
-                obj.team = EmployeeTeam.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
+                obj.team = Team.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
                 obj.save() # Save the final "real form" to the DB
                 messages.success(request,'Employee Added Successfully!')
                 return redirect('/employee')
@@ -73,7 +73,7 @@ class EmployeeView(View):
                 # To Store logged in user in the database directly
                 obj = form.save(commit=False) # Return an object without saving to the DB
                 obj.date_of_birth = datetime.strptime(request.POST['date_of_birth'], '%d/%m/%Y') # to parse date from string
-                obj.team = EmployeeTeam.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
+                obj.team = Team.objects.get(id=request.POST['team']) # Add an author field which will contain current user's id
                 obj.save() # Save the final "real form" to the DB
                 messages.success(request,'Employee Updated Successfully!')
                 return redirect('/employee')
@@ -202,7 +202,7 @@ class TeamView(View):
     def get(self, request, *args, **kwargs):
         if self.is_edit:
             id = self.kwargs['id']
-            team = EmployeeTeam.objects.get(id=id)
+            team = Team.objects.get(id=id)
             jsonObject = serializers.serialize('json', [ team ])
             return HttpResponse(jsonObject)
         else:
@@ -221,7 +221,7 @@ class TeamView(View):
 
     def put(self, request, *args, **kwargs):
         id = self.kwargs['id']
-        team = EmployeeTeam.objects.get(id=id)
+        team = Team.objects.get(id=id)
         form = EmployeeTeamForm(request.POST,instance = team)
         if form.is_valid():
             try:
@@ -240,7 +240,7 @@ class TeamView(View):
         str = str.rstrip(',')
         idList = [int(x) for x in str.split(',')]
         for id in idList:
-            team = EmployeeTeam.objects.get(id=id)
+            team = Team.objects.get(id=id)
             team.delete()
         messages.success(request,'Teams Deleted Successfully!')
         return redirect('/employee/teams')
@@ -263,7 +263,7 @@ class TeamEmployeeView(TemplateView):
             teamEmployee = Employee.objects.filter(Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
         else:
             teamEmployee = Employee.objects.filter(Q(user_id=self.request.user.id),Q(team=id),Q(name__icontains =searchName) | Q(email__icontains =searchName)).order_by(order_by)
-        team = EmployeeTeam.objects.get(id=id)
+        team = Team.objects.get(id=id)
         paginator = Paginator(teamEmployee, 5)
         page_number = self.request.GET.get('page',1)
         pageEmployee = paginator.get_page(page_number)
@@ -332,7 +332,7 @@ def get_teams(request):
     if is_authenticated(request):
         order_by = request.GET.get('order_by', 'name')
         searchName = request.GET.get('search','')
-        teams = EmployeeTeam.objects.filter(name__icontains=searchName).order_by(order_by)
+        teams = Team.objects.filter(name__icontains=searchName).order_by(order_by)
         paginator = Paginator(teams, 5)
         page_number = request.GET.get('page',1)
         pageTeams = paginator.get_page(page_number)

@@ -1,6 +1,6 @@
 from cProfile import label
 from django import forms
-from employee.models import Employee,EmployeeTeam
+from employee.models import Employee,Team
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm 
 from django.core.exceptions import ValidationError  
@@ -21,7 +21,7 @@ class EmployeeForm(forms.ModelForm):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder':'Email Address','id':'email'}),required=True)
     phone = forms.IntegerField(min_value=10000000,max_value=999999999999,required=True,widget=forms.NumberInput(attrs={'placeholder':'Phone Number','id':'phone'}))
     image = forms.ImageField(allow_empty_file=True,required=False,widget=forms.FileInput(attrs={'id':'image'}))
-    team = forms.ModelChoiceField(queryset=EmployeeTeam.objects.filter(status='1').order_by('name'), label='Select Team', widget=forms.Select(attrs={'class': "form-control","id":"team"}), required=True)
+    team = forms.ModelChoiceField(queryset=Team.objects.filter(status='1').order_by('name'), label='Select Team', widget=forms.Select(attrs={'class': "form-control","id":"team"}), required=True)
     date_of_birth = forms.DateField(required=True,widget=forms.TextInput(attrs={'id':'date_of_birth'}))
 
 
@@ -98,8 +98,8 @@ class EmployeeTeamForm(forms.ModelForm):
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
     class Meta:
-        model = EmployeeTeam
+        model = Team
         fields = ['name','status']
 
     name = forms.CharField(max_length=50,widget=forms.TextInput(attrs={'id':'name'}))
-    status = forms.ChoiceField(choices=EmployeeTeam.STATUS,widget=forms.Select(attrs={'id':'status'}))
+    status = forms.ChoiceField(choices=Team.STATUS,widget=forms.Select(attrs={'id':'status'}))

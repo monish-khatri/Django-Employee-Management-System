@@ -32,6 +32,7 @@ APP_URL = 'http://192.168.1.120:8000/'
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_volt.apps.AdminVoltConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

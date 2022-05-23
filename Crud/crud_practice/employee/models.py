@@ -3,7 +3,7 @@ from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 
-class EmployeeTeam(models.Model):
+class Team(models.Model):
     STATUS =(
         ("1", "Active"),
         ("0", "De-active"),
@@ -15,7 +15,7 @@ class EmployeeTeam(models.Model):
         default = '1'
     )
     class Meta:
-        db_table = "employee_teams"
+        db_table = "teams"
 
     def __str__(self):
         return self.name
@@ -29,7 +29,7 @@ class Employee(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
-    team = models.ForeignKey(EmployeeTeam,on_delete=models.SET_NULL,null=True)
+    team = models.ForeignKey(Team,on_delete=models.SET_NULL,null=True)
     date_of_birth = models.DateField(null=True,blank=True)
     class Meta:
         db_table = "employee"
@@ -39,5 +39,5 @@ class Employee(models.Model):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "group":
-            kwargs["queryset"] = EmployeeTeam.objects.order_by('name')
+            kwargs["queryset"] = Team.objects.order_by('name')
         return super(Employee, self).formfield_for_foreignkey(db_field, request, **kwargs)
