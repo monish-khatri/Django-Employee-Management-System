@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     # To clean up images after record deleted
     'django_cleanup.apps.CleanupConfig',
     #recover deleted records
-    'reversion'
+    'reversion',
+    # to show filter in different options
+    'django_admin_listfilter_dropdown',
 ]
 
 MIDDLEWARE = [

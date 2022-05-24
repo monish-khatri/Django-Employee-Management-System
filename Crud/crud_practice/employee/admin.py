@@ -30,7 +30,7 @@ class Employee(admin.ModelAdmin):
       ordering = ['-id']
       # Pagination
       list_per_page = 5
-
+      list_filter = ('user__username', 'team__name')
       #To Disable add button return False
       def has_add_permission(self, request):
         return True
