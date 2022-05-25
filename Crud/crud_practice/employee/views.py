@@ -164,6 +164,7 @@ class AdminView(View):
             return render(request,"admins.html",users)
 
     def delete(self, request, *args, **kwargs):
+        str = self.kwargs['str']
         str = str.rstrip(',')
         idList = [int(x) for x in str.split(',')]
         idList.sort(reverse=True)
