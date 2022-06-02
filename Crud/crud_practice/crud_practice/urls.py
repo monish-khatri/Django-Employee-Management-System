@@ -26,6 +26,7 @@ urlpatterns = [
     path('generic_view/', include('generic_view.urls')),
     path('', include('accounts.urls')),
     path('i18n/', include('django.conf.urls.i18n')),
+    path('api/', include('rest_api.urls')),
     url(r'^media/(?P<path>.*)$', serve,{"document_root":settings.MEDIA_ROOT}),
     url(r'^static/(?P<path>.*)$', serve, {"document_root":settings.STATIC_ROOT}),
 ]
