@@ -1,9 +1,10 @@
 from employee.models import Employee,Team
+from rest_api.models import Snippet
 from rest_framework import viewsets
 from rest_framework import permissions
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import User,Group,Permission
 
-from rest_api.serializers import TeamSerializer,EmployeeSerializer,UserSerializer,GroupSerializer
+from rest_api.serializers import TeamSerializer,EmployeeSerializer,UserSerializer,GroupSerializer,SnippetSerializer,PermissionSerializer
 
 
 class TeamViewSet(viewsets.ModelViewSet):
@@ -28,6 +29,13 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
+class PermissionViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     """
@@ -35,4 +43,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     """
     queryset = Employee.objects.all().order_by('-id')
     serializer_class = EmployeeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+class SnippetViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows Teams to be viewed or edited.
+    """
+    queryset = Snippet.objects.all().order_by('-id')
+    serializer_class = SnippetSerializer
     permission_classes = [permissions.IsAuthenticated]

@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # to show filter in different options
     'django_admin_listfilter_dropdown',
     'rest_framework',
+    'rest_api',
 ]
 
 MIDDLEWARE = [
